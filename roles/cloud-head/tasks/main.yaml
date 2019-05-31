@@ -124,7 +124,7 @@
     path: "{{ volume_mount }}"
     fstype: ext4
     opts: defaults
-    passno: 2
+    passno: '2'
     state: mounted
   when: not mounted|bool
 
