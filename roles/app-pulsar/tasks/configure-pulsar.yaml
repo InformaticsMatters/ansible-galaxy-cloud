@@ -80,6 +80,13 @@
   become: yes
   become_user: pulsar
 
+- name: Install dependency resolvers
+  copy:
+    src: dependency_resolvers_conf.xml
+    dest: "{{ venv_path }}/dependency_resolvers_conf.xml"
+  become: yes
+  become_user: pulsar
+
 - name: Configure Pulsar
   shell: "./exec.sh {{ cmd }}"
   vars:

@@ -60,12 +60,6 @@
     dest: /etc/systemd/system/pulsar.service.d/override.conf
   notify: Restart Pulsar
 
-- name: Install dependency resolvers
-  copy:
-    src: dependency_resolvers_conf.xml
-    dest: "{{ venv_path }}/dependency_resolvers_conf.xml"
-  notify: Restart Pulsar
-
 # Only configure pulsar if it doesn't appear to be running...
 
 - name: Check Pulsar PID
