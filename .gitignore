@@ -5,6 +5,8 @@
 **/*.swp
 **/vault-pass.txt
 
+*.pub
+
 parameters
 
 .idea/

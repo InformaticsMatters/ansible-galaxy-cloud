@@ -142,14 +142,15 @@
     state: restarted
 
 # Now permit ssh access to the head node by adding
-# the built-in public keys to the head node's 'centos' account.
+# any public keys (.pub files) found in the project root.
+# The keys are added to the head node's 'centos' account.
 
 - name: Add authorised users (centos)
   authorized_key:
     user: centos
     key: "{{ lookup('file', item) }}"
   with_fileglob:
-  - public-keys/*
+  - "{{ role_path }}/../../*.pub"
 
 # Generate a key-pair to be used by the centos user
 # throughout the cluster - so centos can ssh to other nodes.
