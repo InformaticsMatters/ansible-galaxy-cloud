@@ -16,7 +16,7 @@
 - name: Check public key-pair (id_rsa.pub)
   stat:
     path: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa.pub"
-  regsiter: pk
+  register: pk
 
 - name: Assert public key-pair exists
   assert:
