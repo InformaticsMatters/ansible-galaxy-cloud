@@ -13,6 +13,22 @@
     - head_addr is defined
     - head_addr|ipaddr
 
+- name: Check public key-pair (id_rsa.pub)
+  stat:
+    path: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa.pub"
+  regsiter: pk
+
+- name: Assert public key-pair exists
+  assert:
+    that: pk.stat.exists
+
+- name: Install public key (id_rsa.pub)
+  os_keypair:
+    auth: "{{ os_auth }}"
+    name: "{{ instance_base_name }}-key"
+    public_key_file: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa.pub"
+    region_name: "{{ os_region_name }}"
+
 - name: Create shared volume
   os_volume:
     auth: "{{ os_auth }}"
@@ -28,7 +44,7 @@
     availability_zone: "{{ os_availability_zone }}"
     image: "{{ head_image_name }}"
     flavor: "{{ head_type }}"
-    key_name: "{{ os_key_name }}"
+    key_name: "{{ instance_base_name }}-key"
     floating_ips:
     - "{{ head_addr }}"
 
@@ -47,6 +63,6 @@
     availability_zone: "{{ os_availability_zone }}"
     image: "{{ worker_image_name }}"
     flavor: "{{ worker_type }}"
-    key_name: "{{ os_key_name }}"
+    key_name: "{{ instance_base_name }}-key"
     auto_floating_ip: no
   loop: "{{ range(worker_count)|list }}"
