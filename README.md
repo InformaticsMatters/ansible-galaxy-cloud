@@ -10,7 +10,7 @@ the head node.
     suitably equipped _bastion_ node on the cloud provider (OpenStack).
 
 ## The bastion node
-You can use the [graph-bastion] project to instantiate a suitable
+You can use the [bastion] project to instantiate a suitable
 Bastion instance from a workstation outside your cluster. From that
 instance you should be able to create the cluster using the pre-configured
 Python virtual environment that it creates there.
@@ -57,7 +57,7 @@ And, to destroy the cluster: -
 ---
 
 [galaxy]: https://docs.galaxyproject.org/en/latest/index.html
-[graph-bastion]: https://github.com/InformaticsMatters/graph-bastion
+[bastion]: https://github.com/InformaticsMatters/ansible-bastion
 [munge]: https://dun.github.io/munge/
 [nextflow]: https://www.nextflow.io
 [parameters]: https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#passing-variables-on-the-command-line
