@@ -4,4 +4,3 @@ ansible == 2.8.0
 netaddr == 0.7.19
 openstacksdk == 0.28.0
 pyOpenSSL == 19.0.0
-PyYAML == 3.13
