@@ -1,0 +1,97 @@
+---
+
+# Search for the libdrmaa dynamic library
+# This must exist, a side-effect of installing slurm.
+#
+# The search result is in the shell-command's stdout.
+# If stdout contains one line (we assert it does) then we use it.
+
+- name: Search for libdrmaa.so
+  shell: find / -name libdrmaa.so
+  register: libdrmaa
+
+- name: Check search results
+  assert:
+    that: libdrmaa.stdout_lines|length == 1
+
+- name: Display libdrmaa.so path
+  debug:
+    var: libdrmaa.stdout_lines[0]
+
+# In order to run commands inside a virtual environment
+# we put a 'wrapper-script' in the virtual environment -
+# one that automatically activates the environment
+# before running the supplied command.
+#
+# See "ansible-command-from-inside-virtualenv" on stackoverflow.
+
+- name: Check virtual environment path
+  stat:
+    path: "{{ venv_path }}"
+  register: venv_path_stat
+
+- name: Assert virtual environment
+  assert:
+    that: venv_path_stat.stat.exists
+
+- name: Manufacture virtual-env execution script
+  template:
+    src: venv-exec.sh.j2
+    dest: "{{ venv_path }}/exec.sh"
+    mode: 0755
+    owner: pulsar
+  become: yes
+  become_user: pulsar
+
+# Generate private key, CSR and ultimately
+# a self-signed certificate.
+#
+# Pulsar documentation
+# (https://pulsar.readthedocs.io/en/latest/configure.html)
+# recommends the following approach...
+#
+#     $ openssl genrsa 1024 > host.key
+#     $ chmod 400 host.key
+#     $ openssl req -new -x509 -nodes -sha1 -days 365  \
+#               -key host.key > host.cert
+#     $ cat host.cert host.key > host.pem
+#     $ chmod 400 host.pem
+
+- name: Generate an OpenSSL private key
+  openssl_privatekey:
+    path: "{{ venv_path }}/privkey.pem"
+    size: 1024
+  become: yes
+  become_user: pulsar
+
+- name: Generate an OpenSSL CSR
+  openssl_csr:
+    path: "{{ venv_path }}/host.csr"
+    privatekey_path: "{{ venv_path }}/privkey.pem"
+  become: yes
+  become_user: pulsar
+
+- name: Generate self-signed OpenSSL certificate
+  openssl_certificate:
+    path: "{{ venv_path }}/host.crt"
+    privatekey_path: "{{ venv_path }}/privkey.pem"
+    csr_path: "{{ venv_path }}/host.csr"
+    provider: selfsigned
+  become: yes
+  become_user: pulsar
+
+- name: Configure Pulsar
+  shell: "./exec.sh {{ cmd }}"
+  vars:
+    cmd: >-
+      pulsar-config
+      --private_token "{{ pulsar_token }}"
+      --libdrmaa_path {{ libdrmaa.stdout_lines[0] }}
+      --host 0.0.0.0
+      --port {{ pulsar_port }}
+      --force
+  args:
+    chdir: "{{ venv_path }}"
+  become: yes
+  become_user: pulsar
+  notify: Restart Pulsar

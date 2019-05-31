@@ -1,0 +1,85 @@
+---
+
+# There's some SSH stability connecting to servers.
+# We assume fact gathering has been disabled for this role
+# so here we wait for a connection and then invoke gather facts (setup)
+# ourselves.
+
+- name: Wait for connection
+  wait_for_connection:
+
+- name: Gather facts
+  setup:
+
+# Off we go...
+
+# First we need to defeat the 'remote_tmp' directory warning
+# that we receive...
+#
+#   Module remote_tmp /root/.ansible/tmp did not exist and was
+#   created with a mode of #0700, this may cause issues when
+#   running as another user.
+
+- name: Defeat remote_tmp warning
+  file:
+    path: /root/.ansible/tmp
+    state: directory
+    owner: root
+    group: root
+
+- name: Install worker packages
+  package:
+    name:
+    - epel-release
+    - nfs-utils
+    - nfs-utils-lib
+    lock_timeout: 180
+
+# We need to be able to resolve between our name and IP
+# on the head node. Workers also need to be able to
+# locate the head node by name so their hosts files
+# are also adjusted.
+
+- name: Adjust /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    regexp: "{{ line }}"
+    line: "{{ line }}"
+  vars:
+    line: "{{ hostvars['localhost']['head_addr'] }} {{ hostvars['localhost']['base_name'] }}-head"
+
+# Mount NFS share
+
+- name: Enable and restart NFS
+  service:
+    name: nfs
+    enabled: yes
+    state: restarted
+
+- name: Create volume mount-point
+  file:
+    path: "{{ volume_mount }}"
+    state: directory
+    mode: 0777
+    owner: root
+    group: root
+
+- name: Mount volume
+  mount:
+    path: "{{ volume_mount }}"
+    src: "{{ nfs_ip }}:{{ volume_mount }}"
+    fstype: nfs
+    opts: defaults
+    passno: '2'
+    state: mounted
+  vars:
+    nfs_ip: "{{ hostvars['localhost']['head_addr'] }}"
+
+# Set centos user's authorised key-pair from the
+# public portion of the key-pair generated on the head.
+# It's set as the head node's 'ssh_public_key' fact.
+
+- name: Set centos authorised key (from head)
+  authorized_key:
+    user: centos
+    key: "{{ hostvars[groups['head'][0]]['ssh_public_key'] }}"

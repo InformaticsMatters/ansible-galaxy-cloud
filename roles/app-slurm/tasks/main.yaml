@@ -1,0 +1,77 @@
+---
+
+- import_tasks: create-user.yaml
+
+# Install packages for operating slurm.
+# As this role is applied to every node in the cluster
+# we also use it to install additional things
+# like Singularity and Java
+
+- name: Install packages
+  package:
+    name:
+    - epel-release
+    - hwloc
+    - libibmad
+    - libibumad
+    - lua
+    - openssl
+    - numactl
+    lock_timeout: 180
+
+# We install slurm from a an RPM we build from source
+# in the build-slurm playbook. The RPM's been put on the shared (data) volume
+# so we can install is on every node in the cluster.
+#
+# We disable warnings on the next task because ansible
+# sees us using yum and wants us to use the yum module.
+
+- name: Install slurm
+  shell: yum --nogpgcheck localinstall -y rpmbuild/RPMS/x86_64/slurm-*.rpm
+  args:
+    chdir: "{{ slurm_home_path }}"
+    warn: no
+
+- name: Create slurm config directory
+  file:
+    path: /etc/slurm
+    state: directory
+    owner: slurm
+    recurse: true
+
+- name: Copy slurm configuration template
+  template:
+    src: slurm.conf.j2
+    dest: /etc/slurm/slurm.conf
+    owner: slurm
+  vars:
+    worker_nodes: "{{ hostvars['localhost']['worker_nodes'] }}"
+    base_name: "{{ hostvars['localhost']['base_name'] }}"
+
+- name: Copy slurm cgroup configuration
+  copy:
+    src: cgroup.conf
+    dest: /etc/slurm/cgroup.conf
+    owner: slurm
+
+- name: Copy slurm cgroup allowed devices configuration
+  copy:
+    src: cgroup_allowed_devices_file.conf
+    dest: /etc/slurm/cgroup_allowed_devices_file.conf
+    owner: slurm
+
+- name: Configure slurmd directory
+  file:
+    path: /var/spool/slurmd
+    state: directory
+    mode: 0755
+    owner: slurm
+    group: slurm
+    recurse: true
+
+- name: Touch slurm log
+  file:
+    path: /var/log/slurmd.log
+    owner: slurm
+    group: slurm
+    state: touch

@@ -1,0 +1,63 @@
+---
+
+- name: Assert key variables
+  assert:
+    that: os_auth_url is defined
+
+# Get information about the node
+# We simply want its IP address
+# so we can add it to the 'head' inventory group
+
+- name: Get head node facts
+  os_server_facts:
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region_name }}"
+    server: "{{ instance_base_name }}-head"
+
+- name: Adjust head node group
+  add_host:
+    groups: head
+    name: "{{ openstack_servers[0].interface_ip }}"
+
+- name: Set head node facts
+  set_fact:
+    head_addr: "{{ openstack_servers[0].interface_ip }}"
+    base_name: "{{ instance_base_name }}"
+
+# Get information about the worker node 'flavour'.
+# We want the CPU count for slurm.
+
+- name: Get worker node flavour facts
+  os_flavor_facts:
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region_name }}"
+    name: "{{ worker_type }}"
+    limit: 1
+
+# Get information about the worker nodes
+# We simply want their IP addresses
+# so we can add them to the 'worker' inventory group
+
+- name: Get worker node facts
+  os_server_facts:
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region_name }}"
+    server: "{{ instance_base_name }}-worker-*"
+
+- name: Adjust worker node group
+  add_host:
+    groups: worker
+    name: "{{ item.private_v4 }}"
+  loop: "{{ openstack_servers }}"
+  no_log: yes
+
+# Now set a 'worker_nodes' fact.
+# This contains worker names, addresses and vCPU value.
+
+- name: Create worker node fact
+  set_fact:
+    worker_nodes: "{{ worker_nodes|default([]) + [{'addr': item.private_v4, 'name': item.name, 'vcpus': vcpus}] }}"
+  vars:
+    vcpus: "{{ openstack_flavors[0]['vcpus'] }}"
+  loop: "{{ openstack_servers }}"
+  no_log: yes

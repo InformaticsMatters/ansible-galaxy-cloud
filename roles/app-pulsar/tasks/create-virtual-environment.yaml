@@ -1,0 +1,20 @@
+---
+
+- name: Copy requirements
+  copy:
+    src: requirements.txt
+    dest: "{{ volume_mount }}/pulsar/requirements.txt"
+
+- name: Install requirements (in a virtual enviornment)
+  pip:
+    requirements: "{{ volume_mount }}/pulsar/requirements.txt"
+    virtualenv: "{{ venv_path }}"
+    virtualenv_python: python2.7
+
+- name: Change ownership of the virtual environment
+  file:
+    path: "{{ venv_path }}"
+    state: directory
+    owner: pulsar
+    group: pulsar
+    recurse: yes

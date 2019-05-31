@@ -1,0 +1,5 @@
+---
+
+pulsar_uid: 2001
+pulsar_port: 8443
+pulsar_token: "{{ lookup('env', 'PULSAR_TOKEN') }}"

@@ -1,0 +1,212 @@
+---
+
+# There's some SSH stability connecting to servers.
+# We assume fact gathering has been disabled for this role
+# so here we wait for a connection and then invoke gather facts (setup)
+# ourselves.
+
+- name: Wait for connection
+  wait_for_connection:
+
+- name: Gather facts
+  setup:
+
+# Off we go...
+
+# First we need to defeat the 'remote_tmp' directory warning
+# that we receive...
+#
+#   Module remote_tmp /root/.ansible/tmp did not exist and was
+#   created with a mode of #0700, this may cause issues when
+#   running as another user.
+
+- name: Defeat remote_tmp warning
+  file:
+    path: /root/.ansible/tmp
+    state: directory
+    owner: root
+    group: root
+
+- name: Install head packages
+  package:
+    name:
+    - epel-release
+    - git
+    - nfs-utils
+    - nfs-utils-lib
+    - python
+    - python-pip
+    lock_timeout: 180
+
+- name: Install Python packages
+  pip:
+    name:
+    - ansible==2.7.11
+    - pyOpenSSL==19.0.0
+
+# We need to be able to resolve between our name and IP
+# on the head node. Workers also need to be able to
+# locate the head node by name so their hosts files
+# are also adjusted.
+
+- name: Adjust /etc/hosts (head)
+  lineinfile:
+    path: /etc/hosts
+    regexp: "{{ line }}"
+    line: "{{ line }}"
+  vars:
+    line: "{{ hostvars['localhost']['head_addr'] }} {{ hostvars['localhost']['base_name'] }}-head"
+
+- name: Adjust /etc/hosts (worker)
+  lineinfile:
+    path: /etc/hosts
+    regexp: "{{ line }}"
+    line: "{{ line }}"
+  vars:
+    line: "{{ item.addr }} {{ item.name }}"
+  with_items: "{{ hostvars['localhost']['worker_nodes'] }}"
+
+# Setup NFS share and head node mounts
+
+# Ansible provides a 'ansible_mounts' variable.
+# It's a map of mounts and we just want to know if
+# our mount (volume_mount) is in it.
+#
+# The map looks something like this (ansible 2.7.10): -
+#
+# "ansible_mounts": [{
+#            "block_available": 122405946,
+#            "block_size": 4096,
+#            "block_total": 128982080,
+#            "block_used": 6576134,
+#            "device": "/dev/vdb",
+#            "fstype": "ext4",
+#            "inode_available": 32767989,
+#            "inode_total": 32768000,
+#            "inode_used": 11,
+#            "mount": "/data",
+#            "options": "rw,relatime,data=ordered",
+#            "size_available": 501374754816,
+#            "size_total": 528310599680,
+#            "uuid": "dc613974-7fc1-48ad-9448-b78003aecaa5"
+#        }]
+
+- name: Inspect volume mount
+  set_fact:
+    mounted: "{{ ansible_mounts|json_query(query)|length }}"
+  vars:
+    query: "[?mount=='{{ volume_mount }}']"
+
+- name: Create volume mount-point
+  file:
+    path: "{{ volume_mount }}"
+    state: directory
+    mode: 0777
+    owner: root
+    group: root
+  when: not mounted|bool
+
+- name: Unmount device
+  mount:
+    path: "{{ volume_mount }}"
+    state: unmounted
+  when: not mounted|bool
+
+- name: Ensure device has a filesystem
+  filesystem:
+    fstype: ext4
+    dev: "{{ volume_device }}"
+  when: not mounted|bool
+
+- name: Mount device
+  mount:
+    src: "{{ volume_device }}"
+    path: "{{ volume_mount }}"
+    fstype: ext4
+    opts: defaults
+    passno: 2
+    state: mounted
+  when: not mounted|bool
+
+- name: Create NFS exports
+  copy:
+    content: "{{ volume_mount }} *(rw,no_root_squash)"
+    dest: /etc/exports
+    owner: root
+    group: root
+
+- name: Enable and restart NFS
+  service:
+    name: nfs
+    enabled: yes
+    state: restarted
+
+# Now permit ssh access to the head node by adding
+# the built-in public keys to the head node's 'centos' account.
+
+- name: Add authorised users (centos)
+  authorized_key:
+    user: centos
+    key: "{{ lookup('file', item) }}"
+  with_fileglob:
+  - public-keys/*
+
+# Generate a key-pair to be used by the centos user
+# throughout the cluster - so centos can ssh to other nodes.
+# We need the HOME directory of the centos user and
+# we need the 'getent' module to help us here.
+# It can cut the 'passwd' database up for us, so, for the centos user
+# we'll get something like: -
+#
+#    "getent_passwd": {
+#        "centos": [
+#            "x",
+#            "1000",
+#            "1000",
+#            "Cloud User",
+#            "/home/centos",
+#            "/bin/bash"
+#        ]
+#    }
+
+- name: Extract centos user's HOME
+  getent:
+    database: passwd
+    key: centos
+    split: ":"
+
+- name: Set centos user's HOME fact
+  set_fact:
+    centos_home: "{{ getent_passwd['centos'][4] }}"
+
+- name: Display
+  debug:
+    var: centos_home
+
+- name: Create centos ssh directory
+  file:
+    path: "{{ centos_home }}/.ssh"
+    mode: 0700
+    owner: centos
+    group: centos
+    state: directory
+
+- name: Generate centos default cluster key-pair
+  openssh_keypair:
+    path: "{{ centos_home }}/.ssh/id_rsa"
+    mode: 0600
+    owner: centos
+    group: centos
+
+- name: Get public key
+  shell: cat {{ centos_home }}/.ssh/id_rsa.pub
+  register: public_key
+
+- name: Set public key fact
+  set_fact:
+    ssh_public_key: "{{ public_key.stdout_lines[0] }}"
+
+# Get/create a MUNGE key.
+# We do this here (once) so it can be used by all nodes.
+
+- include_tasks: get-munge-key.yaml

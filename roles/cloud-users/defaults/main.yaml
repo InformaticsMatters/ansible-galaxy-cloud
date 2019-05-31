@@ -1,0 +1,9 @@
+---
+
+# A list of users to create.
+# They are each created on each node
+# and share a home directory on the
+# shared data volume.
+
+cloud_users:
+- { name: xchemservice, uid: 2000 }

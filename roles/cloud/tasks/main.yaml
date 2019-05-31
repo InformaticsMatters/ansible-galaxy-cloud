@@ -1,0 +1,35 @@
+---
+
+- name: Assert Ansible version
+  assert:
+    that: ansible_version.full is version('2.8', '>=')
+
+# Before we continue,
+# make sure the user actually wants to create the cloud...
+
+- name: Assert key variables
+  assert:
+    that:
+    - worker_count > 0
+
+- name: Create Cloud?
+  pause:
+    prompt: |-
+      Are you sure you want to create the '{{ instance_base_name }}' cloud?
+      Hit return to create.
+      Hit Ctrl+c and then "a" if you've changed your mind
+
+# Assert ssh-agent is running
+
+- name: Check ssh-agent process
+  shell: ps -e | grep ssh-agent | wc -l
+  register: ssh_agent
+
+- name: Assert ssh-agent
+  assert:
+    that: ssh_agent.stdout|int > 0
+
+# Off we go...
+
+- include_tasks: create-{{ provider }}-instances.yaml
+- include_tasks: gather-{{ provider }}-facts.yaml

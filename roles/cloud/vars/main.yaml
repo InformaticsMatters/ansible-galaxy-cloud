@@ -1,0 +1,19 @@
+---
+
+os_auth_url: "{{ lookup('env', 'OS_AUTH_URL') }}"
+os_project_id: "{{ lookup('env', 'OS_PROJECT_ID') }}"
+os_username: "{{ lookup('env', 'OS_USERNAME') }}"
+os_password: "{{ lookup('env', 'OS_PASSWORD') }}"
+os_user_domain_name: "{{ lookup('env', 'OS_USER_DOMAIN_NAME') }}"
+os_region_name: "{{ lookup('env', 'OS_REGION_NAME') }}"
+os_key_name: "{{ lookup('env', 'OS_KEY_NAME')|default('stfc-abc-1', true) }}"
+os_availability_zone: "{{ lookup('env', 'OS_AVAILABILITY_ZONE')|default('ceph', true) }}"
+
+# A convenient authentication dictionary.
+# Used by numerous OpenStack tasks.
+os_auth:
+  auth_url: "{{ os_auth_url }}"
+  username: "{{ os_username }}"
+  password: "{{ os_password }}"
+  project_id: "{{ os_project_id }}"
+  user_domain_name: "{{ os_user_domain_name }}"

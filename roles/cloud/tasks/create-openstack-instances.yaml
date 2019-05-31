@@ -1,0 +1,52 @@
+---
+
+# Creates our cluster on OpenStack.
+#
+# This is driven by variables that should be defined by
+# 'sourcing' your OpenStack Keystone file. The initial
+# 'assert' checks that these variables are set.
+
+- name: Assert cloud variables
+  assert:
+    that:
+    - os_auth_url is defined
+    - head_addr is defined
+    - head_addr|ipaddr
+
+- name: Create shared volume
+  os_volume:
+    auth: "{{ os_auth }}"
+    size: "{{ volume_size_g }}"
+    display_name: "{{ instance_base_name }}-volume"
+    display_description: Shared volume for the Fragment cluster
+
+- name: Create head node
+  os_server:
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region_name }}"
+    name: "{{ instance_base_name }}-head"
+    availability_zone: "{{ os_availability_zone }}"
+    image: "{{ head_image_name }}"
+    flavor: "{{ head_type }}"
+    key_name: "{{ os_key_name }}"
+    floating_ips:
+    - "{{ head_addr }}"
+
+- name: Attach the shared volume to the head node
+  os_server_volume:
+    auth: "{{ os_auth }}"
+    device: "{{ volume_device }}"
+    server: "{{ instance_base_name }}-head"
+    volume: "{{ instance_base_name }}-volume"
+
+- name: Create worker nodes
+  os_server:
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region_name }}"
+    name: "{{ instance_base_name }}-worker-{{ '%d'|format(item|int + 1) }}"
+    availability_zone: "{{ os_availability_zone }}"
+    image: "{{ worker_image_name }}"
+    flavor: "{{ worker_type }}"
+    key_name: "{{ os_key_name }}"
+    auto_floating_ip: no
+  loop: "{{ range(worker_count)|list }}"

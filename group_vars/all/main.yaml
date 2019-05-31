@@ -1,0 +1,31 @@
+---
+
+# The cloud provider
+# (also embedded in the the file names of the tasks we'll run)
+provider: openstack
+
+# A string prepended to each cloud object we create
+# (e.g. the data volume and compute instances)
+instance_base_name: graph
+
+# Cluster node selection
+#
+# OpenStack
+# Type           cores mem disk
+# ---------      ----- --- ----
+# c1.xlarge          4  16  100
+# c2.xlarge         16  16  160
+# c3.xlarge         16  32  160
+
+head_type: c1.xlarge
+head_image_name: ScientificLinux-7-NoGui
+head_addr: 130.246.215.45
+
+worker_type: c2.xlarge
+worker_image_name: ScientificLinux-7-NoGui
+worker_count: 6
+
+# The size of the 'shared' volume.
+# This is attach hed to the head not and exposed
+# as an NFS-share to the worker nodes int he cluster.
+volume_size_g: 1500

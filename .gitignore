@@ -1,0 +1,10 @@
+**/*.key
+**/site*.sh
+**/*.log
+**/*.retry
+**/*.swp
+**/vault-pass.txt
+
+parameters
+
+.idea/

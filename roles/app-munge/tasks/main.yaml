@@ -1,0 +1,52 @@
+---
+
+# Install packages for MUNGE.
+
+- name: Install MUNGE
+  package:
+    name:
+    - epel-release
+    - munge
+    lock_timeout: 180
+  notify: Restart MUNGE
+
+# Prepare MUNGE
+
+- name: Create MUNGE group
+  group:
+    gid: "{{ munge_user_id }}"
+    name: munge
+  notify: Restart MUNGE
+
+- name: Create MUNGE user
+  user:
+    name: munge
+    uid: "{{ munge_user_id }}"
+    group: munge
+    shell: /bin/bash
+    home: /home/munge
+  notify: Restart MUNGE
+
+- name: Copy MUNGE key
+  copy:
+    content: "{{ hostvars[groups['head'][0]]['munge_key'] }}"
+    dest: /etc/munge/munge.key
+    owner: munge
+    group: munge
+    mode: 0400
+  notify: Restart MUNGE
+
+- name: Adjust MUNGE directories
+  file:
+    path: "{{ item.dir }}"
+    owner: munge
+    group: munge
+    mode: "{{ item.perm }}"
+    state: directory
+    recurse: yes
+  with_items:
+  - { dir: '/etc/munge', perm: '0700' }
+  - { dir: '/var/lib/munge', perm: '0711' }
+  - { dir: '/var/log/munge', perm: '0700' }
+  - { dir: '/var/run/munge', perm: '0755' }
+  notify: Restart MUNGE

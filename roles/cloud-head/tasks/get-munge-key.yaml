@@ -1,0 +1,44 @@
+---
+
+# We use the content of the "<cluster base name>.munge.key" file
+# for the MUNGE key or, if it doesn't exist, generate a new one,
+# writing it to the key file for the next iteration.
+
+# We're in the cloud playbook directory.
+# expect the key in the root of our ansible project
+# (i.e. next to our 'roles' directory)
+
+- name: Set MUNGE key filename
+  set_fact:
+    munge_key_filename: "{{ hostvars['localhost']['base_name'] }}.munge.key"
+  delegate_to: 127.0.0.1
+
+- name: Check local MUNGE file
+  stat:
+    path: "{{ munge_key_filename }}"
+  register: key_file
+  delegate_to: 127.0.0.1
+
+- name: Create new MUNGE key
+  set_fact:
+    munge_key: "{{ lookup('password', '/dev/null length=1024') }}"
+  delegate_to: 127.0.0.1
+  when: not key_file.stat.exists
+
+- name: Save (cache) new MUNGE key
+  copy:
+    content: "{{ munge_key }}"
+    dest: "{{ munge_key_filename }}"
+    mode: 0666
+  delegate_to: 127.0.0.1
+  when: not key_file.stat.exists
+
+- name: Retrieve existing MUNGE key
+  set_fact:
+    munge_key: "{{ lookup('file', munge_key_filename ) }}"
+  delegate_to: 127.0.0.1
+  when: key_file.stat.exists
+
+- name: Display MUNGE key
+  debug:
+    var: munge_key

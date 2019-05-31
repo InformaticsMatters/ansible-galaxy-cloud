@@ -1,0 +1,49 @@
+---
+
+# We normally install nextflow on the head node.
+# It depends on singularity (and Java) on all nodes.
+
+- name: Install packages
+  package:
+    name:
+    - epel-release
+    - java-1.8.0-openjdk-headless
+    - singularity
+    lock_timeout: 180
+
+- name: Make installtion directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  loop:
+  - "{{ install_dir }}"
+
+- name: Get nextflow
+  uri:
+    url: "{{ nf_origin }}/v{{ nextflow_version }}/nextflow"
+    dest: "{{ install_dir }}/nextflow"
+    creates: "{{ install_dir }}/nextflow"
+  vars:
+    nf_origin: https://github.com/nextflow-io/nextflow/releases/download
+
+- name: Allow nextflow execution
+  file:
+    dest: "{{ install_dir }}/nextflow"
+    mode: a+x
+    owner: root
+
+# By getting nextflow version we trigger it to download
+# all its plug-ins and dependent JAR files
+# that are not present in the initial download.
+
+- name: Run nextflow version
+  shell: "{{ install_dir }}/nextflow -version"
+  register: nf_v_result
+  changed_when: false
+
+- name: Display nextflow version
+  debug:
+    msg: "{{ nf_v_result.stdout_lines }}"

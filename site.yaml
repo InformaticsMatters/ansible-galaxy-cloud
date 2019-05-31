@@ -1,0 +1,64 @@
+---
+
+# Create the cloud instances.
+# This sets up some facts
+# and dynamically adjusts inventory groups
+
+- hosts: localhost
+  tasks:
+  - include_role:
+      name: cloud
+
+# The above will have created head and worker groups.
+# Now we configure the head node.
+# The head node is used to build slurm and slurm-DRMAA
+# before the app is deployed there
+
+- hosts: head
+  become: yes
+  gather_facts: no
+  tasks:
+  - include_role:
+      name: cloud-head
+  - include_role:
+      name: cloud-users
+  - include_role:
+      name: app-munge
+  - include_role:
+      name: app-slurm
+      tasks_from: build-slurm.yaml
+  - include_role:
+      name: app-slurm
+  - include_role:
+      name: app-slurm-drmaa
+  - include_role:
+      name: app-slurm
+      tasks_from: start-slurm-ctld.yaml
+  - include_role:
+      name: app-pulsar
+  - include_role:
+      name: app-nextflow
+
+# Build and installation on head done, move to worker(s)..
+
+- hosts: worker
+  gather_facts: no
+  become: yes
+  tasks:
+  - include_role:
+      name: cloud-worker
+  - include_role:
+      name: cloud-users
+  - include_role:
+      name: app-munge
+  - include_role:
+      name: app-slurm
+  - include_role:
+      name: app-slurm
+      tasks_from: start-slurm-d.yaml
+  - include_role:
+      name: app-pulsar
+      tasks_from: worker.yaml
+  - include_role:
+      name: app-nextflow
+      tasks_from: worker.yaml

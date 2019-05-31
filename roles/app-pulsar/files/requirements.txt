@@ -1,0 +1,5 @@
+# Pulsar requirements file
+
+drmaa == 0.7.9
+pulsar-app == 0.11.0
+pyOpenSSL == 19.0.0

@@ -1,0 +1,60 @@
+---
+
+- import_tasks: create-user.yaml
+
+# Builds slurm from source
+# (unless it looks like RPMs already exist)
+#
+# This is typically only done on the head node.
+# The workers (and the head installation)
+# will use the produced RPM, which is
+# deposited on the shared file-system.
+
+- name: Display expected slurm version
+  debug:
+    msg: slurm version={{ slurm_version }}
+
+- name: Check existing RPM build target directory
+  stat:
+    path: "{{ slurm_home_path }}/rpmbuild"
+  register: rpmbuild
+
+- name: Install build environment
+  package:
+    name:
+    - epel-release
+    - gcc
+    - mariadb-devel
+    - mariadb-server
+    - munge-devel
+    - munge-libs
+    - openssl
+    - pam-devel
+    - perl-ExtUtils-MakeMaker
+    - python-pip
+    - python-virtualenv
+    - readline-devel
+    - rpm-build
+    lock_timeout: 180
+  when: not rpmbuild.stat.exists
+
+- name: Get slurm
+  get_url:
+    url: https://download.schedmd.com/slurm/slurm-{{ slurm_version }}.tar.bz2
+    dest: "{{ slurm_home_path }}/slurm-{{ slurm_version }}.tar.bz2"
+  when: not rpmbuild.stat.exists
+
+- name: Build slurm
+  shell: rpmbuild -ta slurm-{{ slurm_version }}.tar.bz2
+  args:
+    chdir: "{{ slurm_home_path }}"
+  when: not rpmbuild.stat.exists
+
+- name: Move slurm
+  shell: mv /root/rpmbuild {{ slurm_home_path}}/rpmbuild
+  when: not rpmbuild.stat.exists
+
+- name: Remove download
+  file:
+    path: "{{ slurm_home_path }}/slurm-{{ slurm_version }}.tar.bz2"
+    state: absent

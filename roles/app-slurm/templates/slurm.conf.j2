@@ -1,0 +1,27 @@
+SlurmctldHost={{ base_name }}-head
+
+MpiDefault=none
+ProctrackType=proctrack/cgroup
+ReturnToService=2
+SlurmctldPidFile=/var/run/slurmctld.pid
+SlurmdPidFile=/var/run/slurmd.pid
+SlurmdSpoolDir=/var/spool/slurmd
+SlurmUser=slurm
+StateSaveLocation=/var/spool/slurmd
+SwitchType=switch/none
+TaskPlugin=task/affinity
+
+FastSchedule=1
+SchedulerType=sched/backfill
+SelectType=select/cons_res
+SelectTypeParameters=CR_Core
+
+AccountingStorageType=accounting_storage/none
+ClusterName=cluster
+JobAcctGatherType=jobacct_gather/none
+
+{% for node in worker_nodes %}
+NodeName={{ node.name }} NodeAddr={{ node.addr }} CPUs={{ node.vcpus }} State=UNKNOWN
+{% endfor %}
+
+PartitionName=cluster Nodes={{ base_name }}-worker-[1-{{ worker_nodes|length }}] Default=YES MaxTime=INFINITE State=UP

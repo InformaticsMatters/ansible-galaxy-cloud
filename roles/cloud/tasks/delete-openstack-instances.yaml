@@ -1,0 +1,43 @@
+---
+
+# Deletes our cluster.
+#
+# On OpenStack this is driven by variables that should be defined by
+# 'sourcing' your OpenStack Keystone file. The initial
+# 'assert' checks that these variables are set.
+
+- name: Assert key variables
+  assert:
+    that: os_auth_url is defined
+
+# No need to detach the volume
+# (we see errors if it's not there anyway)
+# so just delete the server...
+
+- name: Delete head node
+  os_server:
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region_name }}"
+    name: "{{ instance_base_name }}-head"
+    state: absent
+
+- name: Get worker node facts
+  os_server_facts:
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region_name }}"
+    server: "{{ instance_base_name }}-worker-*"
+
+- name: Delete worker nodes
+  os_server:
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region_name }}"
+    name: "{{ item['name'] }}"
+    state: absent
+  loop: "{{ openstack_servers }}"
+  no_log: yes
+
+- name: Delete shared volume
+  os_volume:
+    auth: "{{ os_auth }}"
+    display_name: "{{ instance_base_name }}-volume"
+    state: absent

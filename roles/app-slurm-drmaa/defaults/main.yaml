@@ -1,0 +1,5 @@
+---
+
+drmaa_version: 1.1.0
+
+slurm_home_path: /data/slurm

@@ -1,0 +1,82 @@
+---
+
+# Builds (and installs) slurm-DRMAA from source
+# unless it looks like it's already installed.
+#
+# Note: slurm must already be built and installed
+#       on the node we build slurm-DRMAA
+
+- name: Display expected slurm version
+  debug:
+    msg: slurm-DRMAA version={{ drmaa_version }}
+
+- name: Check slurm-DRMAA build library
+  stat:
+    path: /usr/local/lib/libdrmaa.so
+  register: libdrmaa
+
+- name: Install build environment
+  package:
+    name:
+    - epel-release
+    - gcc
+    - mariadb-devel
+    - mariadb-server
+    - munge-devel
+    - munge-libs
+    - openssl
+    - pam-devel
+    - perl-ExtUtils-MakeMaker
+    - python-pip
+    - python-virtualenv
+    - readline-devel
+    - rpm-build
+    lock_timeout: 180
+  when: not libdrmaa.stat.exists
+
+- name: Set slurm-DRMAA origin facts
+  set_fact:
+    drmaa_tarball: slurm-drmaa-{{ drmaa_version }}.tar.gz
+    drmaa_unpacked: slurm-drmaa-{{ drmaa_version }}
+    download_origin: github.com/natefoo/slurm-drmaa/releases/download
+
+- name: Get slurm-DRMAA
+  get_url:
+    url: https://{{ download_origin }}/{{ drmaa_version }}/{{ drmaa_tarball }}
+    dest: "{{ slurm_home_path }}/{{ drmaa_tarball }}"
+  when: not libdrmaa.stat.exists
+
+- name: Unpack slurm-DRMAA
+  unarchive:
+    src: "{{ slurm_home_path }}/{{ drmaa_tarball }}"
+    dest: "{{ slurm_home_path }}"
+    creates: "{{ slurm_home_path }}/{{ drmaa_unpacked }}"
+    remote_src: yes
+  when: not libdrmaa.stat.exists
+
+- name: Configure slurm-DRMAA
+  shell: ./configure
+  args:
+    chdir: "{{ slurm_home_path }}/{{ drmaa_unpacked }}"
+    creates: "{{ slurm_home_path }}/{{ drmaa_unpacked }}/Makefile"
+  when: not libdrmaa.stat.exists
+
+- name: Make slurm-DRMAA
+  shell: make
+  args:
+    chdir: "{{ slurm_home_path }}/{{ drmaa_unpacked }}"
+  when: not libdrmaa.stat.exists
+
+- name: Make Install slurm-DRMAA
+  shell: make install
+  args:
+    chdir: "{{ slurm_home_path }}/{{ drmaa_unpacked }}"
+  when: not libdrmaa.stat.exists
+
+- name: Remove slurm-DRMAA source
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+  - "{{ slurm_home_path }}/{{ drmaa_tarball }}"
+  - "{{ slurm_home_path }}/{{ drmaa_unpacked }}"

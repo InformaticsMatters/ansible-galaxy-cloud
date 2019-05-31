@@ -1,0 +1,12 @@
+---
+
+# Install packages for operating singularity and nextflow.
+# Typically this role is applied to every node in the cluster.
+
+- name: Install packages
+  package:
+    name:
+    - epel-release
+    - java-1.8.0-openjdk-headless
+    - singularity
+    lock_timeout: 180

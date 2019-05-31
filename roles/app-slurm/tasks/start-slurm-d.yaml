@@ -1,0 +1,10 @@
+---
+
+# Starts the slurm daemon
+# (expected on each worker)
+
+- name: Start slurmd
+  service:
+    name: slurmd
+    enabled: yes
+    state: restarted

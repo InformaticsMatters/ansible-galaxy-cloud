@@ -1,0 +1,74 @@
+---
+
+# Installs and configures Pulsar (normally on the head node).
+# Pulsar runs from within a Python virtual environment
+# that we create from the created pulsar user.
+#
+# This role uses systemd and a unit file in our template directory
+# to manage the starting and stopping of Pulsar as a service.
+
+- name: Check variables
+  assert:
+    that:
+    - pulsar_token is defined
+    - pulsar_token|length > 0
+    - pulsar_token != 'SetMe'
+
+- include_tasks: create-user.yaml
+
+# Install packages for Pulsar
+
+- name: Install dependent packages
+  package:
+    name:
+    - epel-release
+    - bzip2
+    - python
+    - python-pip
+    - python-virtualenv
+    lock_timeout: 180
+
+# Create a Python virtual environment (if required)
+# in which we install Pulsar, configure it and start it.
+
+- name: Set virtual environment location
+  set_fact:
+    venv_path: "{{ volume_mount }}/pulsar/pulsar-env"
+
+- name: Install Pulsar systemd unit file
+  template:
+    src: pulsar.service.j2
+    dest: /etc/systemd/system/pulsar.service
+  notify: Restart Pulsar
+
+# We have to 'work around' the race condition between systemd
+# and pulsar, which is slow at creating its PID file. The
+# override.conf adds a short post-start delay to cope.
+#
+# See the related bug with nginx at
+# https://bugs.launchpad.net/ubuntu/+source/nginx/+bug/1581864
+
+- name: Create Pulsar systemd service directory
+  file:
+    path: /etc/systemd/system/pulsar.service.d
+    state: directory
+  notify: Restart Pulsar
+
+- name: Install Pulsar systemd override file
+  copy:
+    src: override.conf
+    dest: /etc/systemd/system/pulsar.service.d/override.conf
+  notify: Restart Pulsar
+
+# Only configure pulsar if it doesn't appear to be running...
+
+- name: Check Pulsar PID
+  stat:
+    path: "{{ venv_path }}/paster.pid"
+  register: pulsar_pid
+
+- include_tasks: create-virtual-environment.yaml
+  when: not pulsar_pid.stat.exists
+
+- include_tasks: configure-pulsar.yaml
+  when: not pulsar_pid.stat.exists

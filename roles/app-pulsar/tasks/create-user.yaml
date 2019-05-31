@@ -1,0 +1,14 @@
+---
+
+- name: Create Pulsar group
+  group:
+    name: pulsar
+    gid: "{{ pulsar_uid }}"
+    state: present
+
+- name: Create Pulsar user
+  user:
+    name: pulsar
+    group: pulsar
+    uid: "{{ pulsar_uid }}"
+    home: "{{ volume_mount }}/pulsar"

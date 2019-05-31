@@ -1,0 +1,10 @@
+---
+
+# Starts the slurm controller daemon
+# (expected on the head node)
+
+- name: Start slurmctld
+  service:
+    name: slurmctld
+    enabled: yes
+    state: restarted

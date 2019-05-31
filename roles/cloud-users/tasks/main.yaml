@@ -1,0 +1,35 @@
+---
+
+- name: Create users
+  user:
+    name: "{{ item.name }}"
+    uid: "{{ item.uid }}"
+    groups: wheel
+    home: "{{ volume_mount }}/{{ item.name }}"
+  with_items: "{{ cloud_users }}"
+
+- name: Add password-less sudo privilege
+  copy:
+    content: "{{ item.name }} ALL=(ALL) NOPASSWD: ALL"
+    dest: /etc/sudoers.d/{{ item.name }}
+  with_items: "{{ cloud_users }}"
+
+# Creates a system-wide (shared) bin directory.
+# The location is also placed in a file in /etc/profile.d
+# as a PATH declaration
+
+- name: Create system-wide bin directory
+  file:
+    path: "{{ bin_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 755
+
+- name: Set system-wide profile
+  template:
+    src: cloud-profile.sh.j2
+    dest: /etc/profile.d/cloud-profile.sh
+    owner: root
+    group: root
+    mode: 644

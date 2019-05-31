@@ -1,0 +1,6 @@
+---
+
+volume_device: /dev/vdb
+volume_mount: /data
+
+bin_dir: "{{ volume_mount }}/bin"
