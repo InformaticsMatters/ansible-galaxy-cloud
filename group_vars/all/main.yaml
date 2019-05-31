@@ -29,3 +29,8 @@ worker_count: 6
 # This is attach hed to the head not and exposed
 # as an NFS-share to the worker nodes int he cluster.
 volume_size_g: 1500
+
+# Application control
+install_nextflow: yes
+install_pulsar: yes
+install_slurm: yes

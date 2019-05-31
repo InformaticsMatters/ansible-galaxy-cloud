@@ -1,7 +1,7 @@
-# Ansible playbooks to form the graph-processing cloud
-The `graph-cloud` project contains a `site.yaml` file and _roles_
+# Ansible playbooks to form a Galaxy/Slurm cloud
+The `glaxy-cloud` project contains a `site.yaml` file and _roles_
 for the formation (and removal) of a [nextflow]/[slurm]/[MUNGE]/[Pulsar]
-graph-processing cluster that consists of a **head** node and one or
+cluster suitable for [Galaxy] that consists of a **head** node and one or
 more **worker** nodes that share an NFS-mounted volume attached to
 the head node.
 
@@ -54,20 +54,9 @@ And, to destroy the cluster: -
 
     $ ansible-playbook unsite.yaml --extra-vars "@parameters"
 
-## Post-install Galaxy actions
-At the moment some steps appear to be required to allow the cluster to
-be used from Galaxy. For the time-being they remain a _manual_
-post-installation step until we understand what needs to be done in the
-long-term.
-
-From the _head_ node run the following as the `pulsar` user: -
-
-    $ dependencies/_conda/bin/conda create \
-        --name __autodock-vina@1.1.2 autodock-vina==1.1.2 \
-        --channel bioconda
-
 ---
 
+[galaxy]: https://docs.galaxyproject.org/en/latest/index.html
 [graph-bastion]: https://github.com/InformaticsMatters/graph-bastion
 [munge]: https://dun.github.io/munge/
 [nextflow]: https://www.nextflow.io

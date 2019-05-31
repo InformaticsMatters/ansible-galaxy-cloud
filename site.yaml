@@ -22,22 +22,32 @@
       name: cloud-head
   - include_role:
       name: cloud-users
+
   - include_role:
       name: app-munge
+    when: install_slurm|bool
   - include_role:
       name: app-slurm
       tasks_from: build-slurm.yaml
+    when: install_slurm|bool
   - include_role:
       name: app-slurm
+    when: install_slurm|bool
   - include_role:
       name: app-slurm-drmaa
+    when: install_slurm|bool
   - include_role:
       name: app-slurm
       tasks_from: start-slurm-ctld.yaml
+    when: install_slurm|bool
+
   - include_role:
       name: app-pulsar
+    when: install_pulsar|bool
+
   - include_role:
       name: app-nextflow
+    when: install_nextflow|bool
 
 # Build and installation on head done, move to worker(s)..
 
@@ -49,16 +59,23 @@
       name: cloud-worker
   - include_role:
       name: cloud-users
+
   - include_role:
       name: app-munge
+    when: install_slurm|bool
   - include_role:
       name: app-slurm
+    when: install_slurm|bool
   - include_role:
       name: app-slurm
       tasks_from: start-slurm-d.yaml
+    when: install_slurm|bool
+
   - include_role:
       name: app-pulsar
       tasks_from: worker.yaml
+    when: install_pulsar|bool
   - include_role:
       name: app-nextflow
       tasks_from: worker.yaml
+    when: install_nextflow|bool
