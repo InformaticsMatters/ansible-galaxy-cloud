@@ -19,16 +19,6 @@
       Hit return to create.
       Hit Ctrl+c and then "a" if you've changed your mind
 
-# Assert ssh-agent is running
-
-- name: Check ssh-agent process
-  shell: ps -e | grep ssh-agent | wc -l
-  register: ssh_agent
-
-- name: Assert ssh-agent
-  assert:
-    that: ssh_agent.stdout|int > 0
-
 # Off we go...
 
 - include_tasks: create-{{ provider }}-instances.yaml
