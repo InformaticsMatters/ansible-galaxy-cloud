@@ -1,3 +1,4 @@
 ---
 
+server_timeout_m: 10
 volume_device: /dev/vdb

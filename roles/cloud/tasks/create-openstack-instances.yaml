@@ -45,6 +45,7 @@
     image: "{{ head_image_name }}"
     flavor: "{{ head_type }}"
     key_name: "{{ instance_base_name }}-key"
+    timeout: "{{ server_timeout_m|int * 60 }}"
     floating_ips:
     - "{{ head_addr }}"
 
@@ -63,6 +64,7 @@
     availability_zone: "{{ os_availability_zone }}"
     image: "{{ worker_image_name }}"
     flavor: "{{ worker_type }}"
+    timeout: "{{ server_timeout_m|int * 60 }}"
     key_name: "{{ instance_base_name }}-key"
     auto_floating_ip: no
   loop: "{{ range(worker_count)|list }}"
