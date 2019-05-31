@@ -18,14 +18,22 @@ Python virtual environment that it creates there.
 Create your bastion, login to it and clone this repository into it's `~/git`
 directory and then continue reading from there...
 
+## Provider environment
+You will need to set provider-specific environment variables before you
+can run this playbook. If you're using OpenStack you should `source` the
+keystone file provided by your stack provider. This sets up the essential
+credentials to create and access cloud resources.
+
+## Template environment
+Inspect the `setenv-template.sh` file in the root of the project to see
+if there are any variables you need to define. Instructions can be found in
+the template file.
+
 ## Playbook configuration
 The playbook relies on a number of _roles_ in the project. Where appropriate,
 each role exposes its key variables in a corresponding `defaults/main.yaml`
 file but the main (common) variables have been placed in
 `group_vars/all/main.yaml`.
-
-Some _sensitive_ configuration is extracted from
-environment variables on the playbook host (bastion).
 
 At the very least you should provide your own values for: -
 
@@ -38,6 +46,12 @@ At the very least you should provide your own values for: -
 
 >   Feel free to review all the variables so that you can decide whether
     you'd like to provide your own values for them.  
+
+>   Application components (nextflow, slurm, Pulsar) are deployed when their
+    corresponding `install_` variable is set. The default in this repository
+    is to enable and install all of them. If you don't want to install
+    a particular component (say nextflow) set its `install_` variable to `no`,
+    i.e. `install_nextflow: no`.
 
 The easiest way to over-ride the built-in values is to provide your
 own YAML-based [parameters] file called `parameters`. The project `parameters`
