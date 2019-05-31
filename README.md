@@ -1,4 +1,5 @@
 # Ansible playbooks to form a Galaxy/Slurm cloud
+
 The `glaxy-cloud` project contains a `site.yaml` file and _roles_
 for the formation (and removal) of a [nextflow]/[slurm]/[MUNGE]/[Pulsar]
 cluster suitable for [Galaxy] that consists of a **head** node and one or
