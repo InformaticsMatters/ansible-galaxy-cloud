@@ -30,7 +30,12 @@ worker_count: 7
 # as an NFS-share to the worker nodes int he cluster.
 volume_size_g: 1500
 
-# Application control
+# Application control.
+#
+# At the moment slurm needs MUNGE, installing slurm expects you
+# to install MUNGE. You cannot set install_munge to 'no'
+# and install_slurm to 'yes'. You can install MUNGE without slurm.
 install_nextflow: yes
 install_pulsar: yes
+install_munge: yes
 install_slurm: yes

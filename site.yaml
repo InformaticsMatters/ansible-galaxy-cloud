@@ -25,7 +25,7 @@
 
   - include_role:
       name: app-munge
-    when: install_slurm|bool
+    when: install_munge|bool
   - include_role:
       name: app-slurm
       tasks_from: build-slurm.yaml
@@ -62,7 +62,7 @@
 
   - include_role:
       name: app-munge
-    when: install_slurm|bool
+    when: install_munge|bool
   - include_role:
       name: app-slurm
     when: install_slurm|bool
