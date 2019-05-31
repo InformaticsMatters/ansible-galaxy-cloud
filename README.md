@@ -15,8 +15,9 @@ Bastion instance from a workstation outside your cluster. From that
 instance you should be able to create the cluster using the pre-configured
 Python virtual environment that it creates there.
 
-Create your bastion, login to it and clone this repository into it's `~/git`
-directory and then continue reading from there...
+Create your bastion and ssh to it. You'll find a clone of this
+repository in its `~/git` directory and you can continue reading this
+document from there.
 
 ## Provider environment
 You will need to set provider-specific environment variables before you
