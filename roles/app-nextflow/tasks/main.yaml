@@ -39,8 +39,9 @@
 # all its plug-ins and dependent JAR files
 # that are not present in the initial download.
 
+# Disabling ansible-lint error 305 (use of shell)
 - name: Run nextflow version
-  shell: "{{ install_dir }}/nextflow -version"
+  shell: "{{ install_dir }}/nextflow -version" # noqa 305
   register: nf_v_result
   changed_when: false
 

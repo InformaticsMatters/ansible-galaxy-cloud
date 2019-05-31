@@ -7,8 +7,9 @@
 # If stdout contains one line (we assert it does) then we use it.
 
 - name: Search for libdrmaa.so
-  shell: find / -name libdrmaa.so
+  command: find / -name libdrmaa.so
   register: libdrmaa
+  changed_when: false
 
 - name: Check search results
   assert:
@@ -87,8 +88,14 @@
   become: yes
   become_user: pulsar
 
+- name: Check Pulsar config (server.ini)
+  stat:
+    path: "{{ venv_path }}/server.ini"
+  register: server_file
+
+# Disabling ansible-lint error 305 (use of shell)
 - name: Configure Pulsar
-  shell: "./exec.sh {{ cmd }}"
+  shell: "./exec.sh {{ cmd }}" # noqa 305
   vars:
     cmd: >-
       pulsar-config
@@ -96,9 +103,9 @@
       --libdrmaa_path {{ libdrmaa.stdout_lines[0] }}
       --host 0.0.0.0
       --port {{ pulsar_port }}
-      --force
   args:
     chdir: "{{ venv_path }}"
   become: yes
   become_user: pulsar
+  when: not server_file.stat.exists
   notify: Restart Pulsar

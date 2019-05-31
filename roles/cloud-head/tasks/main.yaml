@@ -200,8 +200,9 @@
     group: centos
 
 - name: Get public key
-  shell: cat {{ centos_home }}/.ssh/id_rsa.pub
+  command: cat {{ centos_home }}/.ssh/id_rsa.pub
   register: public_key
+  changed_when: false
 
 - name: Set public key fact
   set_fact:

@@ -1,24 +1,28 @@
+[![Build Status](https://travis-ci.com/InformaticsMatters/ansible-galaxy-cloud.svg?branch=master)](https://travis-ci.com/InformaticsMatters/ansible-galaxy-cloud)
+
 # Ansible playbooks to form a Galaxy/Slurm cloud
-
 This repo contains [Ansible] playbooks for deploying a compute cluster. The 
-primary purpose is to act as a HPC resource for executing [Galaxy] and [Nextflow]
-workflows. The playbooks can be used to spin up nodes on an OpenStack cluster
-and deploy a [Slurm] environment to this. You can also deploy [Pulsar] for executing
-Galaxy tools and Nextflow for running Nextflow workflows. Both Pulsar and Nextflow
-use the Slurm cluster for execution. The use of Pulsar allows Galaxy workflows to be executed
-without the need for a shared filesystem between the Galaxy and Slurm environments.
+primary purpose is to act as a HPC resource for executing [Galaxy] and
+[Nextflow] workflows. The playbooks can be used to spin up nodes on an
+OpenStack cluster and deploy a [Slurm] environment to this. You can also
+deploy [Pulsar] for executing Galaxy tools and Nextflow for running Nextflow
+workflows. Both Pulsar and Nextflow use the Slurm cluster for execution.
+The use of Pulsar allows Galaxy workflows to be executed without the need
+for a shared filesystem between the Galaxy and Slurm environments.
 
-Creating a complete cluster takes approx 15 mins depending on the number of nodes.
+Creating a complete cluster takes approx 15 mins depending on the number of
+nodes.
 
-Singularity is deployed to the Slurm cluster allowing jos to be run using Singularity
-containers. Currently Pulsar is not configured to use Singularity containers and instead
-deploys tool dependencies using `conda` but we aim to switch to all execution using Singularity
-in the near future.
+Singularity is deployed to the Slurm cluster allowing jos to be run using
+Singularity containers. Currently Pulsar is not configured to use Singularity
+containers and instead deploys tool dependencies using `conda` but we aim to
+switch to all execution using Singularity in the near future.
 
-Deployment and configuration of Galaxy will be described elsewhere in the near future.
+>   Deployment and configuration of Galaxy will be described elsewhere
+    in the near future.
 
 This `ansible-galaxy-cloud` project contains a `site.yaml` file and _roles_
-for the formation (and removal) of a [nextflow]/[slurm]/[MUNGE]/[Pulsar]
+for the formation (and removal) of a [Nextflow]/[Slurm]/[MUNGE]/[Pulsar]
 cluster suitable for [Galaxy] that consists of a **head** node and one or
 more **worker** nodes that share an NFS-mounted volume attached to
 the head node (mounted as `/data`). 
@@ -89,11 +93,11 @@ And, to destroy the cluster: -
 
 ---
 
-[galaxy]: https://docs.galaxyproject.org/en/latest/index.html
+[ansible]: https://www.ansible.com/
 [bastion]: https://github.com/InformaticsMatters/ansible-bastion
+[galaxy]: https://docs.galaxyproject.org/en/latest/index.html
 [munge]: https://dun.github.io/munge/
 [nextflow]: https://www.nextflow.io
 [parameters]: https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#passing-variables-on-the-command-line
 [pulsar]: https://pulsar.readthedocs.io/en/latest/index.html
 [slurm]: https://slurm.schedmd.com/documentation.html
-[ansible]: https://www.ansible.com/

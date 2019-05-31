@@ -24,7 +24,7 @@
     state: directory
     owner: root
     group: root
-    mode: 755
+    mode: 0755
 
 - name: Set system-wide profile
   template:
@@ -32,4 +32,4 @@
     dest: /etc/profile.d/cloud-profile.sh
     owner: root
     group: root
-    mode: 644
+    mode: 0644

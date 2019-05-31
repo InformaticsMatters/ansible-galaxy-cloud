@@ -54,21 +54,24 @@
     remote_src: yes
   when: not libdrmaa.stat.exists
 
+# Disabling ansible-lint error 305 (use of shell)
 - name: Configure slurm-DRMAA
-  shell: ./configure
+  shell: ./configure # noqa 305
   args:
     chdir: "{{ slurm_home_path }}/{{ drmaa_unpacked }}"
     creates: "{{ slurm_home_path }}/{{ drmaa_unpacked }}/Makefile"
   when: not libdrmaa.stat.exists
 
+# Disabling ansible-lint error 305 (use of shell)
 - name: Make slurm-DRMAA
-  shell: make
+  shell: make # noqa 305
   args:
     chdir: "{{ slurm_home_path }}/{{ drmaa_unpacked }}"
   when: not libdrmaa.stat.exists
 
+# Disabling ansible-lint error 305 (use of shell)
 - name: Make Install slurm-DRMAA
-  shell: make install
+  shell: make install # noqa 305
   args:
     chdir: "{{ slurm_home_path }}/{{ drmaa_unpacked }}"
   when: not libdrmaa.stat.exists
