@@ -26,8 +26,8 @@ worker_image_name: ScientificLinux-7-NoGui
 worker_count: 7
 
 # The size of the 'shared' volume.
-# This is attach hed to the head not and exposed
-# as an NFS-share to the worker nodes int he cluster.
+# This is attached to the head not and exposed
+# as an NFS-share to the worker nodes in the cluster.
 volume_size_g: 1500
 
 # Application control.
