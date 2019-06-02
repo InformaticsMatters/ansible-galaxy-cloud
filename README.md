@@ -90,7 +90,10 @@ At the very least you should provide your own values for: -
 
 The easiest way to over-ride the built-in values is to provide your
 own YAML-based [parameters] file called `parameters`. The project `parameters`
-file is excluded from the repository using `.gitignore`.
+file is excluded from the repository using `.gitignore`. To define your own
+shared volume size you could provide the following in a `properties` file: -
+
+    volume_size_g: 3000
     
 ## Running the playbook
 With environment variables set and a `parameters` file written,
