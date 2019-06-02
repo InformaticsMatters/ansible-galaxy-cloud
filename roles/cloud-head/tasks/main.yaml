@@ -213,6 +213,7 @@
     content: ssh {{ inventory_hostname }}
     dest: connect.sh
     mode: 0700
+    owner: "{{ ansible_env.USER }}"
   delegate_to: localhost
 
 # Get/create a MUNGE key.
