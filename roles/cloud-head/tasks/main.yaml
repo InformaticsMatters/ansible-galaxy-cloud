@@ -208,6 +208,13 @@
   set_fact:
     ssh_public_key: "{{ public_key.stdout_lines[0] }}"
 
+- name: Create head connection command
+  copy:
+    content: ssh {{ inventory_hostname }}
+    dest: connect.sh
+    mode: 0700
+  delegate_to: localhost
+
 # Get/create a MUNGE key.
 # We do this here (once) so it can be used by all nodes.
 

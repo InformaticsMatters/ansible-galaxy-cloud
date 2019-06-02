@@ -11,18 +11,18 @@
 - name: Set MUNGE key filename
   set_fact:
     munge_key_filename: "{{ hostvars['localhost']['base_name'] }}.munge.key"
-  delegate_to: 127.0.0.1
+  delegate_to: localhost
 
 - name: Check local MUNGE file
   stat:
     path: "{{ munge_key_filename }}"
   register: key_file
-  delegate_to: 127.0.0.1
+  delegate_to: localhost
 
 - name: Create new MUNGE key
   set_fact:
     munge_key: "{{ lookup('password', '/dev/null length=1024') }}"
-  delegate_to: 127.0.0.1
+  delegate_to: localhost
   when: not key_file.stat.exists
 
 - name: Save (cache) new MUNGE key
@@ -30,13 +30,13 @@
     content: "{{ munge_key }}"
     dest: "{{ munge_key_filename }}"
     mode: 0666
-  delegate_to: 127.0.0.1
+  delegate_to: localhost
   when: not key_file.stat.exists
 
 - name: Retrieve existing MUNGE key
   set_fact:
     munge_key: "{{ lookup('file', munge_key_filename ) }}"
-  delegate_to: 127.0.0.1
+  delegate_to: localhost
   when: key_file.stat.exists
 
 - name: Display MUNGE key
