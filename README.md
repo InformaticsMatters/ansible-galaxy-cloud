@@ -65,6 +65,10 @@ can run this playbook. If you're using OpenStack you should `source` the
 keystone file provided by your stack provider. This sets up the essential
 credentials to create and access cloud resources.
 
+>   If you've used the `ansibel-bastion` playbook it will have written a
+    suitable set of authentication parameters for you in the root
+    of the initial clone of this project so you need not source anything.
+
 ### Prerequisite - template environment
 Inspect the `setenv-template.sh` file in the root of the project to see
 if there are any variables you need to define. Instructions can be found in
@@ -99,6 +103,7 @@ shared volume size you could provide the following in a `properties` file: -
 With environment variables set and a `parameters` file written,
 run the following on a suitably equipped bastion on your cloud provider: -
 
+    $ pip install --upgrade pip
     $ pip install -r requirements.txt
     $ ansible-playbook site.yaml --extra-vars "@parameters"
 
