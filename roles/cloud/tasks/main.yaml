@@ -4,6 +4,12 @@
   assert:
     that: ansible_version.full is version('2.8', '>=')
 
+- name: Assert key variables
+  assert:
+    that:
+      - os_auth_url is defined
+      - os_auth_url|length > 0
+
 - name: Check slurm/munge installation combination
   fail:
     msg: If you install slurm you must install MUNGE
