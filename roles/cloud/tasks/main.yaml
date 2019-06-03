@@ -7,29 +7,15 @@
 - name: Assert key variables
   assert:
     that:
-      - os_auth_url is defined
-      - os_auth_url|length > 0
+    - os_auth_url is defined
+    - os_auth_url|length > 0
+    - worker_count > 0
 
 - name: Check slurm/munge installation combination
   fail:
     msg: If you install slurm you must install MUNGE
   when:
   - install_slurm|bool and not install_munge|bool
-
-# Before we continue,
-# make sure the user actually wants to create the cloud...
-
-- name: Assert key variables
-  assert:
-    that:
-    - worker_count > 0
-
-- name: Create Cloud?
-  pause:
-    prompt: |-
-      Are you sure you want to create the '{{ instance_base_name }}' cloud?
-      Hit return to create.
-      Hit Ctrl+c and then "a" if you've changed your mind
 
 # Off we go...
 
