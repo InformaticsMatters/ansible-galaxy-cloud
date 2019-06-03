@@ -5,8 +5,8 @@
 **/*.swp
 **/vault-pass.txt
 
-*.pub
-
+connect.sh
 parameters
+*.pub
 
 .idea/
