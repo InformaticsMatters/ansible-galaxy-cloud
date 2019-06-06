@@ -13,17 +13,29 @@ instance_base_name: graph
 # OpenStack
 # Type           cores mem disk
 # ---------      ----- --- ----
+# c1.medium          2   4   40
 # c1.xlarge          4  16  100
+# c1.4xl            28  90  400
+# c1.xxlarge         8  32  160
+# c2.medium          4   4   40
 # c2.xlarge         16  16  160
+# c3.medium          4   8   40
+# c3.large           8  16   80
 # c3.xlarge         16  32  160
 
-head_type: c1.xlarge
+# The following is a total allocation of: -
+#
+#   104 cores
+#   192 Gi RAM
+# 1,040 Gi disk
+
+head_type: c2.xlarge
 head_image_name: ScientificLinux-7-NoGui
 head_addr: 130.246.215.45
 
-worker_type: c2.xlarge
+worker_type: c3.large
 worker_image_name: ScientificLinux-7-NoGui
-worker_count: 7
+worker_count: 11
 
 # The size of the 'shared' volume (G).
 # This is attached to the head not and exposed
