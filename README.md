@@ -98,7 +98,12 @@ file is excluded from the repository using `.gitignore`. To define your own
 shared volume size you could provide the following in a `properties` file: -
 
     volume_size_g: 3000
-    
+
+### Installing public SSH keys
+Any `.pub` files in the project root will be considered public SSH key-files
+and they will be added to the `centos` account of the head node, allowing
+those users access to it.
+  
 ## Running the playbook
 With environment variables set and a `parameters` file written,
 run the following on a suitably equipped bastion on your cloud provider: -
