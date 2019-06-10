@@ -21,10 +21,10 @@ switch to all execution using Singularity in the near future.
 >   Deployment and configuration of Galaxy will be described elsewhere
     in the near future.
 
-This `ansible-galaxy-cloud` project contains a `site.yaml` file and _roles_
-for the formation (and removal) of a [Nextflow]/[Slurm]/[MUNGE]/[Pulsar]
-cluster suitable for [Galaxy] that consists of a **head** node and one or
-more **worker** nodes that share an NFS-mounted volume attached to
+This `ansible-galaxy-cloud` project contains a [site.yaml](site.yaml) file and
+_roles_ for the formation (and removal) of a [Nextflow]/[Slurm]/[MUNGE]/[Pulsar]
+cluster, a cluster suitable for [Galaxy] that consists of a **head** node and
+one or more **worker** nodes that share an NFS-mounted volume attached to
 the head node (mounted as `/data`). 
 
 >   As the cloud instances are unlikely to be accessibly from outside the
@@ -40,10 +40,10 @@ their own `app_` roles: -
 -   [Pulsar]
 
 Application components (nextflow, slurm, Pulsar) are deployed when their
-corresponding `install_` variable is set (see `gropu_vars/all/main.yaml`).
+corresponding `install` variable is set (see [group_vars/all/main.yaml](group_vars/all/main.yaml)).
 The default in this repository is to enable and install all of them.
-If you don't want to install a particular component (say nextflow) set its
-`install_` variable to `no`, i.e. `install_nextflow: no`.
+If you don't want to install a particular component (say nextflow), set its
+`install` variable to `no`, i.e. `install_nextflow: no`.
 
 ## Deploying
 You need to satisfy a few prerequisites before you can deploy the cluster
@@ -65,20 +65,20 @@ can run this playbook. If you're using OpenStack you should `source` the
 keystone file provided by your stack provider. This sets up the essential
 credentials to create and access cloud resources.
 
->   If you've used the `ansibel-bastion` playbook it will have written a
+>   If you've used the [ansible-bastion] playbook it will have written a
     suitable set of authentication parameters for you in the root
     of the initial clone of this project so you need not source anything.
 
 ### Prerequisite - template environment
-Inspect the `setenv-template.sh` file in the root of the project to see
-if there are any variables you need to define. Instructions can be found in
-the template file.
+Inspect the [setenv-template.sh](setenv-template.sh) file in the root of the
+project to see if there are any variables you need to define. Instructions for
+providing these variables can be found in the template file.
 
 ### Prerequisite - playbook configuration
 The playbook relies on a number of _roles_ in the project. Where appropriate,
 each role exposes its key variables in a corresponding `defaults/main.yaml`
 file but the main (common) variables have been placed in
-`group_vars/all/main.yaml`.
+[group_vars/all/main.yaml](group_vars/all/main.yaml).
 
 At the very least you should provide your own values for: -
 
@@ -89,20 +89,24 @@ At the very least you should provide your own values for: -
 -   `worker_count`. The number of worker instances that will be put in the
     cluster.
 
->   Feel free to review all the variables so that you can decide whether
-    you'd like to provide your own values for them.  
+>   You are encouraged to review all the variables so that you can decide
+    whether you need to provide your own values for any of them.  
 
 The easiest way to over-ride the built-in values is to provide your
-own YAML-based [parameters] file called `parameters`. The project `parameters`
-file is excluded from the repository using `.gitignore`. To define your own
-shared volume size you could provide the following in a `properties` file: -
+own YAML-based [parameters] file (called `parameters`). The project
+`parameters` file is excluded from the repository using `.gitignore`.
+To define your own shared volume size you could provide the following in
+a `parameters` file: -
 
     volume_size_g: 3000
 
+...and add the file to your Ansible command-line using
+`--extra-vars "@parameters"`
+
 ### Installing public SSH keys
-Any `.pub` files in the project root will be considered public SSH key-files
-and they will be added to the `centos` account of the head node, allowing
-those users access to it.
+Any `.pub` files fopund in the project's root directory will be considered
+public SSH key-files and they will be added to the `centos` account of the
+head node, allowing those users access to it.
   
 ## Running the playbook
 With environment variables set and a `parameters` file written,
