@@ -4,6 +4,7 @@
   group:
     name: pulsar
     gid: "{{ pulsar_uid }}"
+    groups: wheel
     state: present
 
 - name: Create Pulsar user
@@ -12,3 +13,8 @@
     group: pulsar
     uid: "{{ pulsar_uid }}"
     home: "{{ volume_mount }}/pulsar"
+
+- name: Add password-less sudo privilege to Pulsar user
+  copy:
+    content: "pulsar ALL=(ALL) NOPASSWD: ALL"
+    dest: /etc/sudoers.d/pulsar
