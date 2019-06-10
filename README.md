@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/InformaticsMatters/ansible-graph-cloud.svg?branch=master)](https://travis-ci.com/InformaticsMatters/ansible-graph-cloud)
+[![Build Status](https://travis-ci.com/InformaticsMatters/ansible-galaxy-cloud.svg?branch=master)](https://travis-ci.com/InformaticsMatters/ansible-galaxy-cloud)
 
 # Ansible playbooks to form a Galaxy/Slurm cloud
 This repo contains [Ansible] playbooks for deploying a compute cluster. The 
