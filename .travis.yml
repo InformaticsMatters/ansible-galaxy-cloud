@@ -1,3 +1,5 @@
+---
+
 dist: xenial
 language: python
 python:
@@ -7,3 +9,6 @@ install:
 - pip install -r build-requirements.txt
 script:
 - ansible-lint site.yaml unsite.yaml
+- yamllint site.yaml unsite.yaml inventory.yaml
+- yamllint group_vars roles
+- yamllint .travis.yml

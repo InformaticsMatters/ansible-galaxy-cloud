@@ -7,10 +7,10 @@
 - name: Assert key variables
   assert:
     that:
-      - os_auth_url is defined
-      - os_auth_url|length > 0
+    - os_auth_url is defined
+    - os_auth_url|length > 0
 
-# Deletes our cluster.
+# Deletes our cluster.
 # and any keys we generated.
 
 - name: Delete Cloud (and its keys)?

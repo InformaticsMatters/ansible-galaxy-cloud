@@ -8,12 +8,12 @@ provider: openstack
 # (e.g. the data volume and compute instances)
 instance_base_name: graph
 
-# Cluster node selection
+# Cluster node selection
 #
-# OpenStack
+# OpenStack
 # Type           cores mem disk
 # ---------      ----- --- ----
-# c1.medium          2   4   40
+# c1.medium          2   4   40
 # c1.xlarge          4  16  100
 # c1.4xl            28  90  400
 # c1.xxlarge         8  32  160
@@ -27,7 +27,7 @@ instance_base_name: graph
 #
 #    96 cores
 #   180 Gi RAM
-#   960 Gi disk
+#   960 Gi disk
 
 head_type: c2.xlarge
 head_image_name: ScientificLinux-7-NoGui
@@ -37,14 +37,14 @@ worker_type: c3.large
 worker_image_name: ScientificLinux-7-NoGui
 worker_count: 10
 
-# The size of the 'shared' volume (G).
+# The size of the 'shared' volume (G).
 # This is attached to the head not and exposed
 # as an NFS-share to the worker nodes in the cluster.
 volume_size_g: 3000
 
 # Application control.
 #
-# At the moment slurm needs MUNGE, installing slurm expects you
+# At the moment slurm needs MUNGE, installing slurm expects you
 # to install MUNGE. You cannot set install_munge to 'no'
 # and install_slurm to 'yes'. You can install MUNGE without slurm.
 install_nextflow: yes

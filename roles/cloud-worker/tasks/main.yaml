@@ -38,7 +38,7 @@
 # We need to be able to resolve between our name and IP
 # on the head node. Workers also need to be able to
 # locate the head node by name so their hosts files
-# are also adjusted.
+# are also adjusted.
 
 - name: Adjust /etc/hosts
   lineinfile:

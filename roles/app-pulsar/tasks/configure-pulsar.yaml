@@ -20,9 +20,9 @@
     var: libdrmaa.stdout_lines[0]
 
 # In order to run commands inside a virtual environment
-# we put a 'wrapper-script' in the virtual environment -
+# we put a 'wrapper-script' in the virtual environment -
 # one that automatically activates the environment
-# before running the supplied command.
+# before running the supplied command.
 #
 # See "ansible-command-from-inside-virtualenv" on stackoverflow.
 
@@ -93,9 +93,9 @@
     path: "{{ venv_path }}/server.ini"
   register: server_file
 
-# Disabling ansible-lint error 305 (use of shell)
+# Disabling ansible-lint error 305 (use of shell)
 - name: Configure Pulsar
-  shell: "./exec.sh {{ cmd }}" # noqa 305
+  shell: "./exec.sh {{ cmd }}"  # noqa 305
   vars:
     cmd: >-
       pulsar-config

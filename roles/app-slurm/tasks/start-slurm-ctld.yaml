@@ -1,7 +1,7 @@
 ---
 
 # Starts the slurm controller daemon
-# (expected on the head node)
+# (expected on the head node)
 
 - name: Start slurmctld
   service:

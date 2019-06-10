@@ -49,7 +49,7 @@
       name: app-nextflow
     when: install_nextflow|bool
 
-# Build and installation on head done, move to worker(s)..
+# Build and installation on head done, move to worker(s)..
 
 - hosts: worker
   gather_facts: no

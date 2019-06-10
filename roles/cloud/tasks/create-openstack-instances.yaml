@@ -1,6 +1,6 @@
 ---
 
-# Creates our cluster on OpenStack.
+# Creates our cluster on OpenStack.
 #
 # This is driven by variables that should be defined by
 # 'sourcing' your OpenStack Keystone file. The initial

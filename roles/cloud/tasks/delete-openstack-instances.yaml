@@ -1,6 +1,6 @@
 ---
 
-# Deletes our cluster.
+# Deletes our cluster.
 #
 # On OpenStack this is driven by variables that should be defined by
 # 'sourcing' your OpenStack Keystone file. The initial
@@ -11,7 +11,7 @@
     that: os_auth_url is defined
 
 # No need to detach the volume
-# (we see errors if it's not there anyway)
+# (we see errors if it's not there anyway)
 # so just delete the server...
 
 - name: Delete head node

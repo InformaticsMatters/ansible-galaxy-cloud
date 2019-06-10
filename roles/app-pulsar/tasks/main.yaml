@@ -5,7 +5,7 @@
 # that we create from the created pulsar user.
 #
 # This role uses systemd and a unit file in our template directory
-# to manage the starting and stopping of Pulsar as a service.
+# to manage the starting and stopping of Pulsar as a service.
 
 - name: Check variables
   assert:
@@ -43,7 +43,7 @@
 
 # We have to 'work around' the race condition between systemd
 # and pulsar, which is slow at creating its PID file. The
-# override.conf adds a short post-start delay to cope.
+# override.conf adds a short post-start delay to cope.
 #
 # See the related bug with nginx at
 # https://bugs.launchpad.net/ubuntu/+source/nginx/+bug/1581864

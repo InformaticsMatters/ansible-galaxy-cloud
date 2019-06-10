@@ -1,6 +1,6 @@
 ---
 
-# We normally install nextflow on the head node.
+# We normally install nextflow on the head node.
 # It depends on singularity (and Java) on all nodes.
 
 - name: Install packages
@@ -41,7 +41,7 @@
 
 # Disabling ansible-lint error 305 (use of shell)
 - name: Run nextflow version
-  shell: "{{ install_dir }}/nextflow -version" # noqa 305
+  shell: "{{ install_dir }}/nextflow -version"  # noqa 305
   register: nf_v_result
   changed_when: false
 

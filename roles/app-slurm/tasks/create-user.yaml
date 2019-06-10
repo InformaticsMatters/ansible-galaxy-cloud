@@ -12,4 +12,3 @@
     group: slurm
     home: "{{ slurm_home_path }}"
     shell: /sbin/bash
-

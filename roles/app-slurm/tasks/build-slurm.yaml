@@ -2,7 +2,7 @@
 
 - import_tasks: create-user.yaml
 
-# Builds slurm from source
+# Builds slurm from source
 # (unless it looks like RPMs already exist)
 #
 # This is typically only done on the head node.
