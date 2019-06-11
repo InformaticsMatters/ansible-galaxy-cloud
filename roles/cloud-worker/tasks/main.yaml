@@ -2,8 +2,8 @@
 
 # There's some SSH stability connecting to servers.
 # We assume fact gathering has been disabled for this role
-# so here we wait for a connection and then invoke gather facts (setup)
-# ourselves.
+# so we wait for a connection here and then gather facts ourselves
+# (by invoking setup).
 
 - name: Wait for connection
   wait_for_connection:
@@ -71,7 +71,7 @@
 
 # Set centos user's authorised key-pair from the
 # public portion of the key-pair generated on the head.
-# It's set as the head node's 'ssh_public_key' fact.
+# It's set from the head node's 'ssh_public_key' fact.
 
 - name: Set centos authorised key (from head)
   authorized_key:

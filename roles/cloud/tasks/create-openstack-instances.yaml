@@ -13,14 +13,21 @@
     - head_addr is defined
     - head_addr|ipaddr
 
+- name: Check private key-pair (id_rsa)
+  stat:
+    path: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
+  register: priv_key
+
 - name: Check public key-pair (id_rsa.pub)
   stat:
     path: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa.pub"
-  register: pk
+  register: pub_key
 
-- name: Assert public key-pair exists
+- name: Assert key-pair exists
   assert:
-    that: pk.stat.exists
+    that:
+    - priv_key.stat.exists
+    - pub_key.stat.exists
 
 - name: Install public key (id_rsa.pub)
   os_keypair:
