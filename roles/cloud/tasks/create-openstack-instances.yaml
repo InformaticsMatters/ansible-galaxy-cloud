@@ -36,10 +36,6 @@
     public_key_file: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa.pub"
     region_name: "{{ os_region_name }}"
 
-- name: Display authorisation structure
-  debug:
-    var: os_auth
-
 - name: Create shared volume
   os_volume:
     auth: "{{ os_auth }}"
@@ -77,5 +73,5 @@
     flavor: "{{ worker_type }}"
     key_name: "{{ instance_base_name }}-key"
     timeout: "{{ server_timeout_m|int * 60 }}"
-    wait: no
+    auto_floating_ip: no
   loop: "{{ range(worker_count)|list }}"

@@ -124,13 +124,18 @@ run the following on a suitably equipped bastion on your cloud provider: -
     to your parameters file. By default the volume is expected to
     be an `ext4` volume.
     
+>   CAUTION: The instance creation process creates instances and volumes whose
+    names begin with the value of the `instance_base_name` variable. Use a
+    base name that is unique to your cluster or, on deletion, you may find
+    you've lost more than you expected!
+
 And, to destroy the cluster: -
 
     $ ansible-playbook unsite.yaml --extra-vars "@parameters"
 
 >   To avoid deleting the shared volume, add `volume_delete: no` to your
     parameters file. By default it is deleted when the cluster is deleted.
-
+    
 ---
 
 [ansible]: https://www.ansible.com/
