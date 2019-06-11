@@ -4,13 +4,13 @@
   group:
     name: pulsar
     gid: "{{ pulsar_uid }}"
-    groups: wheel
     state: present
 
 - name: Create Pulsar user
   user:
     name: pulsar
     group: pulsar
+    groups: wheel
     uid: "{{ pulsar_uid }}"
     home: "{{ volume_mount }}/pulsar"
 
