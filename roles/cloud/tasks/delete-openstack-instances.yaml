@@ -42,3 +42,8 @@
     display_name: "{{ instance_base_name }}-volume"
     state: absent
   when: volume_delete|bool
+
+- name: Display shared volume caution
+  debug:
+    msg: "CAUTION: Disk {{ instance_base_name }}-volume HAS NOT BEEN DELETED"
+  when: not volume_delete|bool

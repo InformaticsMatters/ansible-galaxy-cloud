@@ -2,5 +2,6 @@
 
 volume_device: /dev/vdb
 volume_mount: /data
+volume_fstype: ext4
 
 bin_dir: "{{ volume_mount }}/bin"

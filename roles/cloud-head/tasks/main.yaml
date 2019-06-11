@@ -114,16 +114,18 @@
 
 - name: Ensure device has a filesystem
   filesystem:
-    fstype: ext4
+    fstype: "{{ volume_fstype }}"
     dev: "{{ volume_device }}"
     force: no
-  when: not mounted|bool
+  when:
+  - not mounted|bool
+  - volume_initialise|bool
 
 - name: Mount device
   mount:
     src: "{{ volume_device }}"
     path: "{{ volume_mount }}"
-    fstype: ext4
+    fstype: "{{ volume_fstype }}"
     opts: defaults
     passno: '2'
     state: mounted
