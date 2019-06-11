@@ -12,7 +12,9 @@
 
 - name: Display dangerous variables
   debug:
-    msg: volume_delete={{ volume_delete }}
+    msg: >-
+      instance_base_name={{ instance_base_name }}
+      volume_delete={{ volume_delete }}
 
 # Deletes our cluster.
 # and any keys we generated.
