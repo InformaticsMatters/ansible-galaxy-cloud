@@ -25,7 +25,7 @@
   os_server_facts:
     auth: "{{ os_auth }}"
     region_name: "{{ os_region_name }}"
-    server: "{{ instance_base_name }}-minion-*"
+    server: "{{ instance_base_name }}-worker-*"
 
 - name: Delete worker nodes
   os_server:
