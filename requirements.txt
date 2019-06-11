@@ -1,6 +1,6 @@
 # Python requirements for this playbook
 
-ansible == 2.8.0
+ansible == 2.8.1
 netaddr == 0.7.19
-openstacksdk == 0.28.0
+openstacksdk == 0.31.0
 pyOpenSSL == 19.0.0
