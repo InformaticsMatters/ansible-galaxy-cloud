@@ -36,6 +36,10 @@
     public_key_file: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa.pub"
     region_name: "{{ os_region_name }}"
 
+- name: Display authorisation structure
+  debug:
+    var: os_auth
+
 - name: Create shared volume
   os_volume:
     auth: "{{ os_auth }}"
@@ -67,11 +71,11 @@
   os_server:
     auth: "{{ os_auth }}"
     region_name: "{{ os_region_name }}"
-    name: "{{ instance_base_name }}-worker-{{ '%d'|format(item|int + 1) }}"
+    name: "{{ instance_base_name }}-head"
     availability_zone: "{{ os_availability_zone }}"
-    image: "{{ worker_image_name }}"
-    flavor: "{{ worker_type }}"
-    timeout: "{{ server_timeout_m|int * 60 }}"
+    image: "{{ head_image_name }}"
+    flavor: "{{ head_type }}"
     key_name: "{{ instance_base_name }}-key"
+    timeout: "{{ server_timeout_m|int * 60 }}"
     auto_floating_ip: no
   loop: "{{ range(worker_count)|list }}"
