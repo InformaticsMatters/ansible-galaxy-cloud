@@ -10,6 +10,10 @@
     - os_auth_url is defined
     - os_auth_url|length > 0
 
+- name: Display dangerous variables
+  debug:
+    msg: volume_delete={{ volume_delete }}
+
 # Deletes our cluster.
 # and any keys we generated.
 
