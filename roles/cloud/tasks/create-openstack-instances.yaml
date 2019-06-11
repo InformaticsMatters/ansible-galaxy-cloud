@@ -73,8 +73,8 @@
     region_name: "{{ os_region_name }}"
     name: "{{ instance_base_name }}-worker-{{ '%d'|format(item|int + 1) }}"
     availability_zone: "{{ os_availability_zone }}"
-    image: "{{ head_image_name }}"
-    flavor: "{{ head_type }}"
+    image: "{{ worker_image_name }}"
+    flavor: "{{ worker_type }}"
     key_name: "{{ instance_base_name }}-key"
     timeout: "{{ server_timeout_m|int * 60 }}"
     auto_floating_ip: no
