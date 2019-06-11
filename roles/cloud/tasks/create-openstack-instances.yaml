@@ -71,7 +71,7 @@
   os_server:
     auth: "{{ os_auth }}"
     region_name: "{{ os_region_name }}"
-    name: "{{ instance_base_name }}-head"
+    name: "{{ instance_base_name }}-worker-{{ '%d'|format(item|int + 1) }}"
     availability_zone: "{{ os_availability_zone }}"
     image: "{{ head_image_name }}"
     flavor: "{{ head_type }}"
