@@ -6,7 +6,7 @@ provider: openstack
 
 # A string prepended to each cloud object we create
 # (e.g. the data volume and compute instances)
-instance_base_name: graph
+instance_base_name: cluster
 
 # Cluster node selection
 #
