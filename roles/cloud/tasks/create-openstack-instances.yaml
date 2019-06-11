@@ -77,6 +77,5 @@
     flavor: "{{ worker_type }}"
     key_name: "{{ instance_base_name }}-key"
     timeout: "{{ server_timeout_m|int * 60 }}"
-    auto_floating_ip: no
     wait: no
   loop: "{{ range(worker_count)|list }}"
