@@ -5,3 +5,5 @@
   - include_role:
       name: cloud
       tasks_from: delete.yaml
+    vars:
+      volume_delete: no

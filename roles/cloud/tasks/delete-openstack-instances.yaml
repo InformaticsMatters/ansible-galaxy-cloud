@@ -41,3 +41,4 @@
     auth: "{{ os_auth }}"
     display_name: "{{ instance_base_name }}-volume"
     state: absent
+  when: volume_delete|bool

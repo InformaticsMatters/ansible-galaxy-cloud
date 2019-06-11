@@ -116,6 +116,7 @@
   filesystem:
     fstype: ext4
     dev: "{{ volume_device }}"
+    force: no
   when: not mounted|bool
 
 - name: Mount device

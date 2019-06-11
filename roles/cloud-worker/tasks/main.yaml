@@ -50,12 +50,6 @@
 
 # Mount NFS share
 
-- name: Enable and restart NFS
-  service:
-    name: nfs
-    enabled: yes
-    state: restarted
-
 - name: Create volume mount-point
   file:
     path: "{{ volume_mount }}"

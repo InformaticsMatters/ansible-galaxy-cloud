@@ -41,6 +41,8 @@ worker_count: 10
 # This is attached to the head not and exposed
 # as an NFS-share to the worker nodes in the cluster.
 volume_size_g: 3000
+# Delete the volume when the cluster is deleted?
+volume_delete: no
 
 # Application control.
 #
