@@ -1,6 +1,8 @@
-[![Build Status](https://travis-ci.com/InformaticsMatters/ansible-galaxy-cloud.svg?branch=master)](https://travis-ci.com/InformaticsMatters/ansible-galaxy-cloud)
-
 # Ansible playbooks to form a Galaxy/Slurm cloud
+
+[![Build Status](https://travis-ci.com/InformaticsMatters/ansible-galaxy-cloud.svg?branch=master)](https://travis-ci.com/InformaticsMatters/ansible-galaxy-cloud)
+[![GPLv3 license](https://img.shields.io/badge/License-GPLv3-blue.svg)](http://perso.crans.org/besson/LICENSE.html)
+
 This repo contains [Ansible] playbooks for deploying a compute cluster. The 
 primary purpose is to act as a HPC resource for executing [Galaxy] and
 [Nextflow] workflows. The playbooks can be used to spin up nodes on an
