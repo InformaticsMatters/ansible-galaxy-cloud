@@ -144,6 +144,25 @@
     enabled: yes
     state: restarted
 
+# Create a directory that we expect to be used by Ansible to store Roles
+# (that are typically downloaded from Ansible Galaxy)
+
+- name: Create directory for Ansible Roles
+  file:
+    path: "{{ roles_path }}"
+    state: directory
+    owner: centos
+    group: centos
+    mode: 0775
+
+- name: Install Ansible Role variables
+  template:
+    src: ansible-profile.sh.j2
+    dest: /etc/profile.d/ansible-profile.sh
+    owner: root
+    group: root
+    mode: 0644
+
 # Now permit ssh access to the head node by adding
 # any public keys (.pub files) found in the project root.
 # The keys are added to the head node's 'centos' account.
