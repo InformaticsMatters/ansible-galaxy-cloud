@@ -37,3 +37,9 @@
     state: absent
   with_fileglob:
   - "{{ instance_base_name }}.*.key"
+
+- name: Delete head connection command
+  file:
+    path: connect.sh
+    state: absent
+  delegate_to: localhost
