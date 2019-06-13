@@ -14,7 +14,9 @@ instance_base_name: cluster
 # Type           cores mem disk
 # ---------      ----- --- ----
 # c1.medium          2   4   40
+# c1.large           2   8   80
 # c1.xlarge          4  16  100
+# c1.3xl            16  48  200
 # c1.4xl            28  90  400
 # c1.xxlarge         8  32  160
 # c2.medium          4   4   40
@@ -25,17 +27,17 @@ instance_base_name: cluster
 
 # The following amounts to a total allocation of: -
 #
-#    96 cores
-#   180 Gi RAM
-#   960 Gi disk
+#    80 cores
+#   304 Gi RAM
+#  1880 Gi disk
 
-head_type: c2.xlarge
+head_type: c3.large
 head_image_name: ScientificLinux-7-NoGui
 head_addr: 130.246.215.45
 
-worker_type: c3.large
+worker_type: c1.xlarge
 worker_image_name: ScientificLinux-7-NoGui
-worker_count: 10
+worker_count: 18
 
 # The size of the 'shared' volume (G).
 # This is attached to the head not and exposed
