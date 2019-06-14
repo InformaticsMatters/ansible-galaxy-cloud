@@ -46,6 +46,10 @@
 # Create the head node but allow for failure.
 # We give up if, after 5 attempts, we cannot create the instance.
 
+- name: Display head node flavour
+  debug:
+    var: head_type
+
 - name: Create head node
   os_server:
     auth: "{{ os_auth }}"
@@ -72,6 +76,10 @@
 
 # Create the worker nodes but, as before, we allow for failure.
 # We give up if, after 5 attempts, we cannot create an instance.
+
+- name: Display worker node flavour
+  debug:
+    var: worker_type
 
 - name: Create worker nodes
   os_server:
