@@ -43,6 +43,9 @@
     display_name: "{{ instance_base_name }}-volume"
     display_description: Shared volume for the Fragment cluster
 
+# Create the head node but allow for failure.
+# We give up if, after 5 attempts, we cannot create the instance.
+
 - name: Create head node
   os_server:
     auth: "{{ os_auth }}"
@@ -55,6 +58,10 @@
     timeout: "{{ server_timeout_m|int * 60 }}"
     floating_ips:
     - "{{ head_addr }}"
+  register: head
+  retries: 5
+  delay: 30
+  until: not head.failed
 
 - name: Attach the shared volume to the head node
   os_server_volume:
@@ -62,6 +69,9 @@
     device: "{{ volume_device }}"
     server: "{{ instance_base_name }}-head"
     volume: "{{ instance_base_name }}-volume"
+
+# Create the worker nodes but, as before, we allow for failure.
+# We give up if, after 5 attempts, we cannot create an instance.
 
 - name: Create worker nodes
   os_server:
@@ -74,4 +84,8 @@
     key_name: "{{ instance_base_name }}-key"
     timeout: "{{ server_timeout_m|int * 60 }}"
     auto_ip: no
+  regsiter: worker
+  retries: 5
+  delay: 30
+  until: not worker.failed
   loop: "{{ range(worker_count)|list }}"
