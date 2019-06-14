@@ -84,7 +84,7 @@
     key_name: "{{ instance_base_name }}-key"
     timeout: "{{ server_timeout_m|int * 60 }}"
     auto_ip: no
-  regsiter: worker
+  register: worker
   retries: 5
   delay: 30
   until: not worker.failed
