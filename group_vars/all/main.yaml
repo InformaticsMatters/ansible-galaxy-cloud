@@ -27,22 +27,22 @@ instance_base_name: cluster
 
 # The following amounts to a total allocation of: -
 #
-#    80 cores
-#   304 Gi RAM
-#  1880 Gi disk
+#   272 cores
+#   560 Gi RAM
+#  2760 Gi disk
 
-head_type: c3.large
+head_type: c1.3xl
 head_image_name: ScientificLinux-7-NoGui
 head_addr: 130.246.215.45
 
-worker_type: c1.xlarge
+worker_type: c3.xlarge
 worker_image_name: ScientificLinux-7-NoGui
-worker_count: 18
+worker_count: 16
 
 # The size of the 'shared' volume (G).
 # This is attached to the head not and exposed
 # as an NFS-share to the worker nodes in the cluster.
-volume_size_g: 3000
+volume_size_g: 4000
 # Format the volume (ext4) prior to the first mount?
 volume_initialise: yes
 # Delete the volume when the cluster is deleted?
