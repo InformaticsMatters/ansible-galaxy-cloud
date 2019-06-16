@@ -130,7 +130,8 @@ def create(conn,
         new_server = None
         try:
             new_server = conn.compute.wait_for_server(server)
-            conn.add_ip_list(new_server, ips)
+            if ips:
+                conn.add_ip_list(new_server, ips)
         except openstack.exceptions.ResourceFailure:
             print('ERROR: ResourceFailure ({})'.format(server_name))
         except openstack.exceptions.ResourceTimeout:
