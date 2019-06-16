@@ -30,7 +30,7 @@
 #           --name graph-worker \
 #           --image ScientificLinux-7-NoGui \
 #           --flavour c3.large \
-#           --keypair graph-key \
+#           --keypair graph-key
 #
 # Refer to the connection API in the openstacksdk for background:
 # https://docs.openstack.org/openstacksdk/latest/user/connection.html
