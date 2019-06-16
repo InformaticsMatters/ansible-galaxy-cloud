@@ -105,6 +105,7 @@ def create(conn,
             return False
         network_info.append({'uuid': network.id})
 
+    auto_ip = True if ips else False
     attempt = 1
     success = False
     while not success and attempt <= attempts:
@@ -116,8 +117,10 @@ def create(conn,
                                                 image_id=image.id,
                                                 flavor_id=flavour.id,
                                                 ips=ips,
+                                                auto_ip=auto_ip,
                                                 key_name=keypair_name,
-                                                networks=network_info)
+                                                networks=network_info,
+                                                wait=True)
         except openstack.exceptions.HttpException as ex:
             # Something wrong creating the server.
             # Nothing we can do here.
@@ -178,7 +181,6 @@ PARSER.add_argument('-p', '--keypair',
 PARSER.add_argument('-k', '--network',
                     help='The network name to use')
 PARSER.add_argument('-s', '--ips',
-                    default=[],
                     nargs='+',
                     help='IPs to assign to the server.'
                          ' Only valid if --count is unused or "1"')
