@@ -60,6 +60,7 @@ def create(conn,
            image_name,
            flavour_name,
            network_name,
+           floating_ips,
            keypair_name,
            attempts,
            retry_delay_s,
@@ -77,6 +78,7 @@ def create(conn,
     :param image_name: The server instance base image
     :param flavour_name: The server flavour (type), i.e. 'c2.large'
     :param network_name: The (optional) network name, or None
+    :param floating_ips: A (possibly empty) list of floating IPs
     :param keypair_name: The OpenStack SSH key-pair to use (this must exist)
     :param attempts: The number of create attempts. If the server fails
                      this function uses this value to decide whether to try
@@ -112,6 +114,7 @@ def create(conn,
             server = conn.compute.create_server(name=server_name,
                                                 image_id=image.id,
                                                 flavor_id=flavour.id,
+                                                floating_ips=floating_ips,
                                                 key_name=keypair_name,
                                                 networks=network_info)
         except openstack.exceptions.HttpException as ex:
@@ -171,6 +174,11 @@ PARSER.add_argument('-p', '--keypair',
 # Optional...
 PARSER.add_argument('-k', '--network',
                     help='The network name to use')
+PARSER.add_argument('-l', '--floating-ips',
+                    default=[],
+                    nargs='+',
+                    help='Floating IPs to assign to the server.'
+                         ' Only valid if --count is unused or "1"')
 
 # Defaults...
 PARSER.add_argument('-a', '--attempts',
@@ -193,10 +201,14 @@ PARSER.add_argument('-v', '--verbose',
                     action='store_true')
 
 ARGS = PARSER.parse_args()
+print(ARGS)
 
 # Extra validation for the given arguments...
 if ARGS.retry_delay > MAX_DELAY:
     print('retry-delay (%s) is too large' % ARGS.retry_delay)
+    sys.exit(1)
+if ARGS.floating_ips and ARGS.count > 1:
+    print('Can only use floating-ips if count is 1')
     sys.exit(1)
 
 # Create an OpenStack connection.
@@ -209,7 +221,8 @@ connection = openstack.connect()
 for i in range(1, ARGS.count):
     name = ARGS.name if ARGS.count == 1 else '{}-{}'.format(ARGS.name, i)
     if not create(connection, name,
-                  ARGS.image, ARGS.flavour, ARGS.network, ARGS.keypair,
+                  ARGS.image, ARGS.flavour, ARGS.network, ARGS.floating_ips,
+                  ARGS.keypair,
                   ARGS.attempts, ARGS.retry_delay,
                   ARGS.verbose):
         # Something went wrong.
