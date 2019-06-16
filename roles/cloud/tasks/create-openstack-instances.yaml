@@ -52,7 +52,7 @@
 
 - name: Create head node
   script: >-
-    os-create-server.py --name {{ instance_base_name }}-head
+    create-os-server.py --name {{ instance_base_name }}-head
     --flavour {{ head_type }}
     --image {{ head_image_name }}
     --keypair {{ instance_base_name }}-key
@@ -81,7 +81,7 @@
 
 - name: Create worker nodes (batch)
   script: >-
-    os-create-server.py --name {{ instance_base_name }}-worker
+    create-os-server.py --name {{ instance_base_name }}-worker
     --flavour {{ worker_type }}
     --image {{ worker_image_name }}
     --keypair {{ instance_base_name }}-key
