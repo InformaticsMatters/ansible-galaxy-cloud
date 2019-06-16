@@ -177,7 +177,7 @@ PARSER.add_argument('-p', '--keypair',
 # Optional...
 PARSER.add_argument('-k', '--network',
                     help='The network name to use')
-PARSER.add_argument('-p', '--ips',
+PARSER.add_argument('-s', '--ips',
                     default=[],
                     nargs='+',
                     help='IPs to assign to the server.'
