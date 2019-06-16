@@ -23,14 +23,14 @@
 #           --keypair graph-key \
 #           --count 64
 #
-# Or, to create one instance: -
+# Or, to create one instance
+# whose name is exactly as provided: -
 #
 #   $ ./create-os-server.py \
 #           --name graph-worker \
 #           --image ScientificLinux-7-NoGui \
 #           --flavour c3.large \
 #           --keypair graph-key \
-#           --count 64
 
 import argparse
 import sys
