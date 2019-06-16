@@ -56,7 +56,7 @@
     --flavour {{ head_type }}
     --image {{ head_image_name }}
     --keypair {{ instance_base_name }}-key
-    --floating-ips {{ head_addr }}
+    --ips {{ head_addr }}
   environment:
     OS_AUTH_URL: "{{ os_auth_url }}"
     OS_PROJECT_ID: "{{ os_project_id }}"
@@ -64,6 +64,11 @@
     OS_PASSWORD: "{{ os_password }}"
     OS_USER_DOMAIN_NAME: "{{ os_user_domain_name }}"
     OS_REGION_NAME: "{{ os_region_name }}"
+  register: head
+
+- name: Display head server
+  debug:
+    var: head
 
 - name: Attach the shared volume to the head node
   os_server_volume:

@@ -2,7 +2,8 @@
 
 # A create-server utility as it would have been written by 'Robert I'.
 # A wrapper around the OpenStack SDK to try (and try again) to create
-# OpenStack server instances.
+# OpenStack server instances. This module doesn't expose all the features
+# of the underlying API, just those I need.
 #
 # You will need your OpenStack environment variables defined
 # and the Python openstacksdk module...
@@ -60,7 +61,7 @@ def create(conn,
            image_name,
            flavour_name,
            network_name,
-           floating_ips,
+           ips,
            keypair_name,
            attempts,
            retry_delay_s,
@@ -78,7 +79,7 @@ def create(conn,
     :param image_name: The server instance base image
     :param flavour_name: The server flavour (type), i.e. 'c2.large'
     :param network_name: The (optional) network name, or None
-    :param floating_ips: A (possibly empty) list of floating IPs
+    :param ips: A (possibly empty) list of IPs to sssign to the server
     :param keypair_name: The OpenStack SSH key-pair to use (this must exist)
     :param attempts: The number of create attempts. If the server fails
                      this function uses this value to decide whether to try
@@ -114,7 +115,7 @@ def create(conn,
             server = conn.compute.create_server(name=server_name,
                                                 image_id=image.id,
                                                 flavor_id=flavour.id,
-                                                floating_ips=floating_ips,
+                                                ips=ips,
                                                 key_name=keypair_name,
                                                 networks=network_info)
         except openstack.exceptions.HttpException as ex:
@@ -123,6 +124,8 @@ def create(conn,
             print('ERROR: HttpException ({})'.format(server_name))
             print(ex)
             return False
+
+        print(server)
 
         new_server = None
         try:
@@ -174,10 +177,10 @@ PARSER.add_argument('-p', '--keypair',
 # Optional...
 PARSER.add_argument('-k', '--network',
                     help='The network name to use')
-PARSER.add_argument('-l', '--floating-ips',
+PARSER.add_argument('-p', '--ips',
                     default=[],
                     nargs='+',
-                    help='Floating IPs to assign to the server.'
+                    help='IPs to assign to the server.'
                          ' Only valid if --count is unused or "1"')
 
 # Defaults...
@@ -204,10 +207,10 @@ ARGS = PARSER.parse_args()
 
 # Extra validation for the given arguments...
 if ARGS.retry_delay > MAX_DELAY:
-    print('retry-delay (%s) is too large' % ARGS.retry_delay)
+    print('--retry-delay (%s) is too large' % ARGS.retry_delay)
     sys.exit(1)
 if ARGS.floating_ips and ARGS.count > 1:
-    print('Can only use floating-ips if count is 1')
+    print('Can only use --ips if --count is 1')
     sys.exit(1)
 
 # Create an OpenStack connection.
