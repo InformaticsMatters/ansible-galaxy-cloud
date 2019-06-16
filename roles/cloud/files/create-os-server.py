@@ -105,6 +105,8 @@ def create(conn,
             return False
         network_info.append({'uuid': network.id})
 
+    print("IPS=%s" % ips)
+
     auto_ip = True if ips else False
     attempt = 1
     success = False
