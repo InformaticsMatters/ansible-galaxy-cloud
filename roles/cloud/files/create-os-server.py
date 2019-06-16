@@ -209,7 +209,7 @@ ARGS = PARSER.parse_args()
 if ARGS.retry_delay > MAX_DELAY:
     print('--retry-delay (%s) is too large' % ARGS.retry_delay)
     sys.exit(1)
-if ARGS.floating_ips and ARGS.count > 1:
+if ARGS.ips and ARGS.count > 1:
     print('Can only use --ips if --count is 1')
     sys.exit(1)
 
@@ -223,7 +223,7 @@ connection = openstack.connect()
 for i in range(0, ARGS.count):
     name = ARGS.name if ARGS.count == 1 else '{}-{}'.format(ARGS.name, i + 1)
     if not create(connection, name,
-                  ARGS.image, ARGS.flavour, ARGS.network, ARGS.floating_ips,
+                  ARGS.image, ARGS.flavour, ARGS.network, ARGS.ips,
                   ARGS.keypair,
                   ARGS.attempts, ARGS.retry_delay,
                   ARGS.verbose):
