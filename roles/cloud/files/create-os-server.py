@@ -201,7 +201,6 @@ PARSER.add_argument('-v', '--verbose',
                     action='store_true')
 
 ARGS = PARSER.parse_args()
-print(ARGS)
 
 # Extra validation for the given arguments...
 if ARGS.retry_delay > MAX_DELAY:
@@ -218,8 +217,8 @@ connection = openstack.connect()
 
 # Crete the server instances until we have an error
 # we can't handle...
-for i in range(1, ARGS.count):
-    name = ARGS.name if ARGS.count == 1 else '{}-{}'.format(ARGS.name, i)
+for i in range(0, ARGS.count):
+    name = ARGS.name if ARGS.count == 1 else '{}-{}'.format(ARGS.name, i + 1)
     if not create(connection, name,
                   ARGS.image, ARGS.flavour, ARGS.network, ARGS.floating_ips,
                   ARGS.keypair,
