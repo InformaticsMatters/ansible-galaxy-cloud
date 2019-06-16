@@ -67,10 +67,6 @@
   register: head
   changed_when: '"Cloud changed: True" in head.stdout'
 
-- name: Display head server
-  debug:
-    var: head
-
 - name: Attach the shared volume to the head node
   os_server_volume:
     auth: "{{ os_auth }}"
