@@ -105,9 +105,6 @@ def create(conn,
             return False
         network_info.append({'uuid': network.id})
 
-    print("IPS=%s" % ips)
-
-    auto_ip = True if ips else False
     attempt = 1
     success = False
     while not success and attempt <= attempts:
@@ -118,8 +115,6 @@ def create(conn,
             server = conn.compute.create_server(name=server_name,
                                                 image_id=image.id,
                                                 flavor_id=flavour.id,
-                                                ips=ips,
-                                                auto_ip=auto_ip,
                                                 key_name=keypair_name,
                                                 networks=network_info,
                                                 wait=True)
@@ -135,6 +130,7 @@ def create(conn,
         new_server = None
         try:
             new_server = conn.compute.wait_for_server(server)
+            conn.add_ip_list(new_server, ips)
         except openstack.exceptions.ResourceFailure:
             print('ERROR: ResourceFailure ({})'.format(server_name))
         except openstack.exceptions.ResourceTimeout:
