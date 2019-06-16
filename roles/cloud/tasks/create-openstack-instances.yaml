@@ -65,6 +65,7 @@
     OS_USER_DOMAIN_NAME: "{{ os_user_domain_name }}"
     OS_REGION_NAME: "{{ os_region_name }}"
   register: head
+  changed_when: '"Cloud changed: True" in head.stdout'
 
 - name: Display head server
   debug:
@@ -98,3 +99,5 @@
     OS_PASSWORD: "{{ os_password }}"
     OS_USER_DOMAIN_NAME: "{{ os_user_domain_name }}"
     OS_REGION_NAME: "{{ os_region_name }}"
+  register: workers
+  changed_when: "'Cloud changed: True' in workers.stdout"

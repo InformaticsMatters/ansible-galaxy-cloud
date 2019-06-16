@@ -35,8 +35,15 @@
 import argparse
 import sys
 import time
+from collections import namedtuple
 
 import openstack
+
+# ServerResult.
+# success   is True on success.
+# changed   If successful, changed is True if the server was created,
+#           and False if it already existed.
+ServerResult = namedtuple('ServerResult', 'success changed')
 
 MAX_DELAY = 120
 
@@ -93,24 +100,25 @@ def create(conn,
     image = conn.compute.find_image(image_name)
     if not image:
         print('Unknown image ({})'.format(image_name))
-        return False
+        return ServerResult(False, False)
     flavour = conn.compute.find_flavor(flavour_name)
     if not flavour:
         print('Unknown flavour ({})'.format(flavour_name))
-        return False
+        return ServerResult(False, False)
     # Optional network supplied?
     network_info = []
     if network_name:
         network = conn.network.find_network(network_name)
         if not network:
             print('Unknown network ({})'.format(network_name))
-            return False
+            return ServerResult(False, False)
         network_info.append({'uuid': network.id})
 
     # Do nothing if the server appears to exist
     if conn.get_server(name_or_id=server_name):
         # Yes!
-        return True
+        # Success, unchanged
+        return ServerResult(True, False)
 
     attempt = 1
     success = False
@@ -130,7 +138,7 @@ def create(conn,
             # Nothing we can do here.
             print('ERROR: HttpException ({})'.format(server_name))
             print(ex)
-            return False
+            return ServerResult(False, False)
 
         new_server = None
         try:
@@ -158,7 +166,9 @@ def create(conn,
                 time.sleep(retry_delay_s)
             attempt += 1
 
-    return success
+    # Set 'changed'.
+    # If not successful this is ignored.
+    return ServerResult(success, True)
 
 
 # Configure the command-line parser
@@ -229,13 +239,18 @@ connection = openstack.connect()
 # we can't handle...
 for i in range(0, ARGS.count):
     name = ARGS.name if ARGS.count == 1 else '{}-{}'.format(ARGS.name, i + 1)
-    if not create(connection, name,
-                  ARGS.image, ARGS.flavour, ARGS.network, ARGS.ips,
-                  ARGS.keypair,
-                  ARGS.attempts, ARGS.retry_delay,
-                  ARGS.verbose):
+    server_result = create(connection, name,
+                           ARGS.image, ARGS.flavour, ARGS.network, ARGS.ips,
+                           ARGS.keypair,
+                           ARGS.attempts, ARGS.retry_delay,
+                           ARGS.verbose)
+    if not server_result.success:
         # Something went wrong.
         # Leave.
         sys.exit(1)
 
 # Success if we get here...
+#
+# We (Ansible) expects 'Cloud changed: True'
+# to use for its changed_when variable.
+print('Cloud changed: {}'.format(server_result.changed))
