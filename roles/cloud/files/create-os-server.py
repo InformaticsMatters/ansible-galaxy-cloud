@@ -5,7 +5,7 @@
 # OpenStack server instances.
 #
 # Note:     This module DOES NOT provide all the functionality of
-# ----      the underlying API, just those I need for my work.
+# ----      the underlying API, just those bits I need for my work.
 #
 # You will need your OpenStack environment variables defined
 # and the Python openstacksdk module...
