@@ -132,8 +132,6 @@ def create(conn,
             print(ex)
             return False
 
-        print(server)
-
         new_server = None
         try:
             new_server = conn.compute.wait_for_server(server)
