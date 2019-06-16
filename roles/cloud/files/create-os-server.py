@@ -2,8 +2,10 @@
 
 # A create-server utility as it would have been written by 'Robert I'.
 # A wrapper around the OpenStack SDK to try (and try again) to create
-# OpenStack server instances. This module doesn't expose all the features
-# of the underlying API, just those I need.
+# OpenStack server instances.
+#
+# Note:     This module DOES NOT provide all the functionality of
+# ----      the underlying API, just those I need for my work.
 #
 # You will need your OpenStack environment variables defined
 # and the Python openstacksdk module...
@@ -79,7 +81,7 @@ def create(conn,
     :param image_name: The server instance base image
     :param flavour_name: The server flavour (type), i.e. 'c2.large'
     :param network_name: The (optional) network name, or None
-    :param ips: A (possibly empty) list of IPs to sssign to the server
+    :param ips: A (possibly empty) list of IPs to assign to the server
     :param keypair_name: The OpenStack SSH key-pair to use (this must exist)
     :param attempts: The number of create attempts. If the server fails
                      this function uses this value to decide whether to try
@@ -104,6 +106,11 @@ def create(conn,
             print('Unknown network ({})'.format(network_name))
             return False
         network_info.append({'uuid': network.id})
+
+    # Do nothing if the server appears to exist
+    if conn.get_server(name_or_id=server_name):
+        # Yes!
+        return True
 
     attempt = 1
     success = False
@@ -181,6 +188,7 @@ PARSER.add_argument('-k', '--network',
                     help='The network name to use')
 PARSER.add_argument('-s', '--ips',
                     nargs='+',
+                    default=[],
                     help='IPs to assign to the server.'
                          ' Only valid if --count is unused or "1"')
 
