@@ -1,5 +1,11 @@
 ---
 
+- name: Check cloud users (must have one)
+  assert:
+    that:
+    - cloud_users is defined
+    - cloud_users|length > 0
+
 - name: Create users
   user:
     name: "{{ item.name }}"
@@ -30,6 +36,26 @@
   template:
     src: cloud-profile.sh.j2
     dest: /etc/profile.d/cloud-profile.sh
+    owner: root
+    group: root
+    mode: 0644
+
+# Create a directory that we expect to be used by Ansible to store Roles
+# (that are typically downloaded from Ansible Galaxy). The owner of
+# this directory is the first entry in the user's list.
+
+- name: Create directory for Ansible Roles ({{ cloud_users[0].name }})
+  file:
+    path: "{{ roles_path }}"
+    state: directory
+    owner: "{{ cloud_users[0].name }}"
+    group: "{{ cloud_users[0].name }}"
+    mode: 0775
+
+- name: Install Ansible Role variables (for all)
+  template:
+    src: ansible-profile.sh.j2
+    dest: /etc/profile.d/ansible-profile.sh
     owner: root
     group: root
     mode: 0644

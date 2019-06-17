@@ -1,9 +1,9 @@
 ---
 
 # A list of users to create.
-# They are each created on each node
-# and share a home directory on the
-# shared data volume.
+# They are each created on each node and share a home directory on the
+# shared data volume. The first user in the list also owns the
+# Ansible roles directory, created on the shared volume.
 
 cloud_users:
 - { name: xchemservice, uid: 2000 }
