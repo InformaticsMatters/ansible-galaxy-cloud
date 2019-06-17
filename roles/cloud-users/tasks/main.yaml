@@ -50,7 +50,7 @@
     state: directory
     owner: "{{ cloud_users[0].name }}"
     group: "{{ cloud_users[0].name }}"
-    mode: 0775
+    mode: 0755
 
 - name: Install Ansible Role variables (for all)
   template:
