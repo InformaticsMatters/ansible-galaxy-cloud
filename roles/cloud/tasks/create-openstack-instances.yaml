@@ -97,3 +97,7 @@
     OS_REGION_NAME: "{{ os_region_name }}"
   register: workers
   changed_when: "'Cloud changed: True' in workers.stdout"
+
+- name: Display 'create worker node' output
+  debug:
+    var: workers.stdout

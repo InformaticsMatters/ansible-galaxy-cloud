@@ -46,7 +46,8 @@ import openstack
 # success   is True on success.
 # changed   If successful, changed is True if the server was created,
 #           and False if it already existed.
-ServerResult = namedtuple('ServerResult', 'success changed')
+# failures  The number of server creation failures creating the server
+ServerResult = namedtuple('ServerResult', 'success changed failures')
 
 MAX_DELAY = 120
 
@@ -123,6 +124,9 @@ def create(conn,
         # Success, unchanged
         return ServerResult(True, False)
 
+    # The number of times we had to re-create this server instance.
+    num_create_failures = 0
+
     attempt = 1
     success = False
     while not success and attempt <= attempts:
@@ -156,6 +160,9 @@ def create(conn,
         if new_server:
             success = True
         else:
+            # Failed to create a server.
+            # Count it.
+            num_create_failures += 1
             if verbose:
                 print('Failed ({}) attempt no {}.'.format(server_name, attempt))
             # Delete the instance
@@ -171,7 +178,7 @@ def create(conn,
 
     # Set 'changed'.
     # If not successful this is ignored.
-    return ServerResult(success, True)
+    return ServerResult(success, True, num_create_failures)
 
 
 # Configure the command-line parser
@@ -240,6 +247,8 @@ connection = openstack.connect()
 
 # Crete the server instances until we have an error
 # we can't handle...
+num_servers_that_had_trouble = 0
+num_server_create_failures = 0
 for i in range(0, ARGS.count):
     name = ARGS.name if ARGS.count == 1 else '{}-{}'.format(ARGS.name, i + 1)
     server_result = create(connection, name,
@@ -251,9 +260,15 @@ for i in range(0, ARGS.count):
         # Something went wrong.
         # Leave.
         sys.exit(1)
+    elif server_result.failures:
+        num_servers_that_had_trouble += 1
+        num_server_create_failures += server_result.failures
 
 # Success if we get here...
 #
+# Print a summary of the failures
+print('Cloud server create failures: {}'.format(num_server_create_failures))
+print('Cloud servers needing help: {}'.format(num_servers_that_had_trouble))
 # We (Ansible) expects 'Cloud changed: True'
 # to use for its changed_when variable.
 print('Cloud changed: {}'.format(server_result.changed))
