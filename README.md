@@ -119,7 +119,7 @@ run the following on a suitably equipped bastion on your cloud provider: -
 
     $ pip install --upgrade pip
     $ pip install -r requirements.txt
-    $ ansible-playbook site.yaml --extra-vars "@parameters"
+    $ ansible-playbook site.yaml -e "@parameters"
 
 >   You can avoid formatting the shared volume (for instance if
     you have an existing non-ext4 volume) by adding `volume_initialise: no`
@@ -133,7 +133,7 @@ run the following on a suitably equipped bastion on your cloud provider: -
 
 And, to destroy the cluster: -
 
-    $ ansible-playbook unsite.yaml --extra-vars "@parameters"
+    $ ansible-playbook unsite.yaml -e "@parameters"
 
 >   To avoid deleting the shared volume, add `volume_delete: no` to your
     parameters file. By default it is deleted when the cluster is deleted.

@@ -248,6 +248,7 @@ connection = openstack.connect()
 # Crete the server instances until we have an error
 # we can't handle...
 num_servers_that_had_trouble = 0
+num_server_consecutive_failures = 0
 num_server_create_failures = 0
 for i in range(0, ARGS.count):
     name = ARGS.name if ARGS.count == 1 else '{}-{}'.format(ARGS.name, i + 1)
@@ -263,11 +264,14 @@ for i in range(0, ARGS.count):
     elif server_result.failures:
         num_servers_that_had_trouble += 1
         num_server_create_failures += server_result.failures
+        if server_result.failures > num_server_consecutive_failures:
+            num_server_consecutive_failures = server_result.failures
 
 # Success if we get here...
 #
 # Print a summary of the failures
 print('Cloud server create failures: {}'.format(num_server_create_failures))
+print('Cloud server max consecutive failures: {}'.format(num_server_consecutive_failures))
 print('Cloud servers needing help: {}'.format(num_servers_that_had_trouble))
 # We (Ansible) expects 'Cloud changed: True'
 # to use for its changed_when variable.
