@@ -78,6 +78,7 @@ def create(conn,
            keypair_name,
            attempts,
            retry_delay_s,
+           wait_time_s,
            verbose=False):
     """Create an OpenStack server. Automatically deletes and retries
     the creation process until a server is available. Once the creation
@@ -98,6 +99,7 @@ def create(conn,
                      this function uses this value to decide whether to try
                      ans create it.
     :param retry_delay_s: The delay between creation attempts.
+    :param wait_time_s: The maximum period to wait (for creation or deletion).
     :param verbose: Generate helpful progress.
     :returns: False on failure
     """
@@ -149,13 +151,14 @@ def create(conn,
 
         new_server = None
         try:
-            new_server = conn.compute.wait_for_server(server)
+            new_server = conn.compute.wait_for_server(server,
+                                                      wait=wait_time_s)
             if ips:
                 conn.add_ip_list(new_server, ips)
         except openstack.exceptions.ResourceFailure:
             print('ERROR: ResourceFailure ({})'.format(server_name))
         except openstack.exceptions.ResourceTimeout:
-            print('ERROR: ResourceTimeout ({})'.format(server_name))
+            print('ERROR: ResourceTimeout/create ({})'.format(server_name))
 
         if new_server:
             success = True
@@ -170,7 +173,14 @@ def create(conn,
             if attempt < attempts:
                 if verbose:
                     print('Deleting... ({})'.format(server_name))
+                # Delete the instance
+                # and wait for it...
                 conn.compute.delete_server(server)
+                try:
+                    conn.compute.wait_for_delete(server,
+                                                 wait=wait_time_s)
+                except openstack.exceptions.ResourceTimeout:
+                    print('ERROR: ResourceTimeout/delete ({})'.format(server_name))
                 if verbose:
                     print('Pausing...')
                 time.sleep(retry_delay_s)
@@ -226,6 +236,11 @@ PARSER.add_argument('-c', '--count',
                          ' given name, where <n> has the value "1" to "count"',
                     type=positive_int_non_zero,
                     default=1)
+PARSER.add_argument('-w', '--wait-time',
+                    help='The maximum period (seconds) to wait for a server'
+                         ' to get created (or destroyed).',
+                    type=positive_int_non_zero,
+                    default=120)
 PARSER.add_argument('-v', '--verbose',
                     help='Generate helpful output.',
                     action='store_true')
@@ -259,7 +274,7 @@ for i in range(0, ARGS.count):
     server_result = create(connection, name,
                            ARGS.image, ARGS.flavour, ARGS.network, ARGS.ips,
                            ARGS.keypair,
-                           ARGS.attempts, ARGS.retry_delay,
+                           ARGS.attempts, ARGS.retry_delay, ARGS.wait_time,
                            ARGS.verbose)
     if not server_result.success:
         # Something went wrong.
