@@ -152,8 +152,9 @@ def create(conn,
                                                       wait=wait_time_s)
             if ips:
                 conn.add_ip_list(new_server, ips)
-        except openstack.exceptions.ResourceFailure:
+        except openstack.exceptions.ResourceFailure as rf_e:
             print('ERROR: ResourceFailure ({})'.format(server_name))
+            print('{}'.format(rf_e))
         except openstack.exceptions.ResourceTimeout:
             print('ERROR: ResourceTimeout/create ({})'.format(server_name))
 
