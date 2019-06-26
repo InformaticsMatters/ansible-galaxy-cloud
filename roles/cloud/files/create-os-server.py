@@ -106,25 +106,25 @@ def create(conn,
     image = conn.compute.find_image(image_name)
     if not image:
         print('Unknown image ({})'.format(image_name))
-        return ServerResult(False, False)
+        return ServerResult(False, False, 0)
     flavour = conn.compute.find_flavor(flavour_name)
     if not flavour:
         print('Unknown flavour ({})'.format(flavour_name))
-        return ServerResult(False, False)
+        return ServerResult(False, False, 0)
     # Optional network supplied?
     network_info = []
     if network_name:
         network = conn.network.find_network(network_name)
         if not network:
             print('Unknown network ({})'.format(network_name))
-            return ServerResult(False, False)
+            return ServerResult(False, False, 0)
         network_info.append({'uuid': network.id})
 
     # Do nothing if the server appears to exist
     if conn.get_server(name_or_id=server_name):
         # Yes!
         # Success, unchanged
-        return ServerResult(True, False)
+        return ServerResult(True, False, 0)
 
     # The number of times we had to re-create this server instance.
     num_create_failures = 0
@@ -147,7 +147,7 @@ def create(conn,
             # Nothing we can do here.
             print('ERROR: HttpException ({})'.format(server_name))
             print(ex)
-            return ServerResult(False, False)
+            return ServerResult(False, False, 0)
 
         new_server = None
         try:
