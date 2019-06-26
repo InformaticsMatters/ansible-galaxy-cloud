@@ -3,3 +3,6 @@
 volume_mount: /data
 
 bin_dir: "{{ volume_mount }}/bin"
+
+# Path to where we expect to find Ansible-Galaxy Roles
+roles_path: /data/ansible-roles
