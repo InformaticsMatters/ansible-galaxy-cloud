@@ -49,9 +49,6 @@ import openstack
 # failures  The number of server creation failures creating the server
 ServerResult = namedtuple('ServerResult', 'success changed failures')
 
-MAX_DELAY = 120
-
-
 def positive_int_non_zero(value):
     """Used as an argparse type validator.
     Checks the value is a suitable integer.
@@ -247,10 +244,6 @@ PARSER.add_argument('-v', '--verbose',
 
 ARGS = PARSER.parse_args()
 
-# Extra validation for the given arguments...
-if ARGS.retry_delay > MAX_DELAY:
-    print('--retry-delay (%s) is too large' % ARGS.retry_delay)
-    sys.exit(1)
 if ARGS.ips and ARGS.count > 1:
     print('Can only use --ips if --count is 1')
     sys.exit(1)

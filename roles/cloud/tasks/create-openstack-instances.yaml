@@ -87,6 +87,7 @@
     --flavour {{ worker_type }}
     --image {{ worker_image_name }}
     --keypair {{ instance_base_name }}-key
+    --wait-time {{ os_server_wait_time_s }}
     --count {{ worker_count }}
   environment:
     OS_AUTH_URL: "{{ os_auth_url }}"
