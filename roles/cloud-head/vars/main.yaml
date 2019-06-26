@@ -4,6 +4,4 @@ volume_device: /dev/vdb
 volume_mount: /data
 volume_fstype: ext4
 
-roles_path: /data/ansible-roles
-
 bin_dir: "{{ volume_mount }}/bin"
