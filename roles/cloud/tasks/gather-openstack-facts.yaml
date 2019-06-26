@@ -38,12 +38,15 @@
 # Get information about the worker nodes
 # We simply want their IP addresses
 # so we can add them to the 'worker' inventory group
+#
+# Workers can be called "{{ instance_base_name }}-worker" when there's just one
+# or "{{ instance_base_name }}-worker-<N>" when there are two or more...
 
 - name: Get worker node facts
   os_server_facts:
     auth: "{{ os_auth }}"
     region_name: "{{ os_region_name }}"
-    server: "{{ instance_base_name }}-worker-*"
+    server: "{{ instance_base_name }}-worker*"
 
 - name: Adjust worker node group
   add_host:
