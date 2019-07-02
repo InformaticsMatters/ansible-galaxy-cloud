@@ -64,6 +64,10 @@ Create your bastion and ssh to it. You'll find a clone of this
 repository in its `~/git` directory and you can continue reading this
 document from there.
 
+>   The bastion playbook will have also added a `parameters` file in the
+    project root containing your OpenStack credentials. Use this file to add
+    additional parameter values. 
+
 ### Prerequisite - provider environment
 You will need to set provider-specific environment variables before you
 can run this playbook. If you're using OpenStack you should `source` the
