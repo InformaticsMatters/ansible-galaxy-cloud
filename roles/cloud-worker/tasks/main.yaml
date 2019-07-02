@@ -50,7 +50,7 @@
 
 # Mount NFS share
 
-- name: Create volume mount-point
+- name: Create volume mount-point ({{ volume_mount }})
   file:
     path: "{{ volume_mount }}"
     state: directory
@@ -58,7 +58,7 @@
     owner: root
     group: root
 
-- name: Mount volume
+- name: Mount volume (from {{ nfs_ip }})
   mount:
     path: "{{ volume_mount }}"
     src: "{{ nfs_ip }}:{{ volume_mount }}"
