@@ -97,7 +97,7 @@
   vars:
     query: "[?mount=='{{ volume_mount }}']"
 
-- name: Create volume mount-point
+- name: Create volume mount-point ({{ volume_mount }})
   file:
     path: "{{ volume_mount }}"
     state: directory
@@ -121,7 +121,7 @@
   - not mounted|bool
   - volume_initialise|bool
 
-- name: Mount device
+- name: Mount device ({{ volume_device }}->{{ volume_mount }})
   mount:
     src: "{{ volume_device }}"
     path: "{{ volume_mount }}"
