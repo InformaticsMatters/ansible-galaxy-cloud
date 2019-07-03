@@ -1,0 +1,18 @@
+---
+
+# A simple Pulsar 'sanity check'.
+# This verifies the pulsar process exists
+
+- name: Get Pulsar PIDs
+  pids:
+    name: pulsar
+  register: pulsar_pids
+  changed_when: false
+
+- name: Display Pulsar PIDs
+  debug:
+    var: pulsar_pids.pids
+
+- name: Check Pulsar PIDs
+  assert:
+    that: "{{ pulsar_pids.pids|length }} > 0"

@@ -80,12 +80,16 @@
       tasks_from: worker.yaml
     when: install_nextflow|bool
 
-# Finally, a quick slurm test....
+# Finally, some quick tests....
 
 - hosts: head
   become: yes
   tasks:
   - include_role:
       name: app-slurm
-      tasks_from: check-sinfo.yaml
+      tasks_from: check-slurm.yaml
     when: install_slurm|bool
+  - include_role:
+      name: app-pulsar
+      tasks_from: check-pulsar.yaml
+    when: install_pulsar|bool
