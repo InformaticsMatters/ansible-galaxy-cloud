@@ -8,6 +8,8 @@
   - include_role:
       name: cloud
       tasks_from: gather-openstack-facts.yaml
+    vars:
+      gather_worker_facts: no
 
 - hosts: head
   become: yes
@@ -16,5 +18,3 @@
       name: app-slurm
       tasks_from: check-slurm.yaml
     when: install_slurm|bool
-    vars:
-      gather_worker_facts: no
