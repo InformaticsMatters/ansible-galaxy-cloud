@@ -16,3 +16,5 @@
       name: app-slurm
       tasks_from: check-slurm.yaml
     when: install_slurm|bool
+    vars:
+      gather_worker_facts: no

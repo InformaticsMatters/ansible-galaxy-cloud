@@ -13,18 +13,21 @@
     auth: "{{ os_auth }}"
     region_name: "{{ os_region_name }}"
     server: "{{ instance_base_name }}-head"
+  when: gather_head_facts|bool
 
 - name: Adjust head node group
   add_host:
     groups: head
     name: "{{ openstack_servers[0].interface_ip }}"
   changed_when: false
+  when: gather_head_facts|bool
 
 - name: Set head node facts
   set_fact:
     head_addr: "{{ openstack_servers[0].interface_ip }}"
     head_private_v4: "{{ openstack_servers[0].private_v4 }}"
     base_name: "{{ instance_base_name }}"
+  when: gather_head_facts|bool
 
 # Get information about the worker node 'flavour'.
 # We want the CPU count for slurm.
@@ -35,6 +38,7 @@
     region_name: "{{ os_region_name }}"
     name: "{{ worker_type }}"
     limit: 1
+  when: gather_worker_facts|bool
 
 # Get information about the worker nodes
 # We simply want their IP addresses
@@ -48,6 +52,7 @@
     auth: "{{ os_auth }}"
     region_name: "{{ os_region_name }}"
     server: "{{ instance_base_name }}-worker*"
+  when: gather_worker_facts|bool
 
 - name: Adjust worker node group
   add_host:
@@ -56,6 +61,7 @@
   loop: "{{ openstack_servers }}"
   no_log: yes
   changed_when: false
+  when: gather_worker_facts|bool
 
 # Now set a 'worker_nodes' fact.
 # This contains worker names, addresses and vCPU value.
@@ -67,3 +73,4 @@
     vcpus: "{{ openstack_flavors[0]['vcpus'] }}"
   loop: "{{ openstack_servers }}"
   no_log: yes
+  when: gather_worker_facts|bool

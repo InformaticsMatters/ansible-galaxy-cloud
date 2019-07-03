@@ -1,5 +1,9 @@
 ---
 
+# Variables controlling fact-gathering
+gather_head_facts: yes
+gather_worker_facts: yes
+
 # Time to wait for a server...
 os_server_wait_time_s: 300
 
