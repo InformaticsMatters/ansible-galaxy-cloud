@@ -8,6 +8,10 @@
   register: sinfo_responding
   changed_when: false
 
+- name: Display responding node count
+  debug:
+    var: sinfo_responding.stdout
+
 - name: Check responding node count
   assert:
     that: "{{ sinfo_responding.stdout|int }} == {{ worker_count }}"
