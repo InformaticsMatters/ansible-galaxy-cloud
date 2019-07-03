@@ -79,3 +79,13 @@
       name: app-nextflow
       tasks_from: worker.yaml
     when: install_nextflow|bool
+
+# Finally, a quick slurm test....
+
+- hosts: head
+  become: yes
+  tasks:
+  - include_role:
+      name: app-slurm
+      tasks_from: check-sinfo.yaml
+    when: install_slurm|bool

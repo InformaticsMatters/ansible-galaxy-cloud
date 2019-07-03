@@ -1,0 +1,13 @@
+---
+
+# A simple Slurm 'sanity check'.
+# This verifies 'sinfo' returns the right number of 'responding' nodes.
+
+- name: Get responding node count
+  shell: sinfo -hr | tr -s ' ' | cut -d' ' -f 4  # noqa 305
+  register: sinfo_responding
+  changed_when: false
+
+- name: Check responding node count
+  assert:
+    that: "{{ sinfo_responding.stdout|int }} == {{ worker_count }}"

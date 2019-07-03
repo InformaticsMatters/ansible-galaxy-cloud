@@ -135,6 +135,10 @@ run the following on a suitably equipped bastion on your cloud provider: -
     base name that is unique to your cluster or, on deletion, you may find
     you've lost more than you expected!
 
+You can run separate 'sanity checks' with the `site-check` playbook: -
+
+    $ ansible-playbook site-check.yaml -e "@parameters"
+
 And, to destroy the cluster: -
 
     $ ansible-playbook unsite.yaml -e "@parameters"
