@@ -110,11 +110,10 @@ a `parameters` file: -
 
     volume_size_g: 3000
 
-...and add the file to your Ansible command-line using
-`--extra-vars "@parameters"`
+...and add the file to your Ansible command-line using `-e "@parameters"`
 
 ### Installing public SSH keys
-Any `.pub` files fopund in the project's root directory will be considered
+Any `.pub` files found in the project's root directory will be considered
 public SSH key-files and they will be added to the `centos` account of the
 head node, allowing those users access to it.
   

@@ -46,7 +46,7 @@
     regexp: "{{ line }}"
     line: "{{ line }}"
   vars:
-    line: "{{ hostvars['localhost']['head_addr'] }} {{ hostvars['localhost']['base_name'] }}-head"
+    line: "{{ hostvars['localhost']['head_private_v4'] }} {{ hostvars['localhost']['base_name'] }}-head"
 
 # Mount NFS share
 
@@ -67,7 +67,7 @@
     passno: '2'
     state: mounted
   vars:
-    nfs_ip: "{{ hostvars['localhost']['head_addr'] }}"
+    nfs_ip: "{{ hostvars['localhost']['head_private_v4'] }}"
 
 # Set centos user's authorised key-pair from the
 # public portion of the key-pair generated on the head.

@@ -23,6 +23,7 @@
 - name: Set head node facts
   set_fact:
     head_addr: "{{ openstack_servers[0].interface_ip }}"
+    head_private_v4: "{{ openstack_servers[0].private_v4 }}"
     base_name: "{{ instance_base_name }}"
 
 # Get information about the worker node 'flavour'.
