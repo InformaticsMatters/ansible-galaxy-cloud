@@ -10,10 +10,10 @@
 
 - name: Set node count facts
   set_fact:
-    active_count: sinfo_summary.stdout.split('/')[0]|int
-    idle_count: sinfo_summary.stdout.split('/')[1]|int
-    offline_count: sinfo_summary.stdout.split('/')[2]|int
-    total_count: sinfo_summary.stdout.split('/')[3]|int
+    active_count: "{{ sinfo_summary.stdout.split('/')[0]|int }}"
+    idle_count: "{{ sinfo_summary.stdout.split('/')[1]|int }}"
+    offline_count: "{{ sinfo_summary.stdout.split('/')[2]|int }}"
+    total_count: "{{ sinfo_summary.stdout.split('/')[3]|int }}"
 
 - name: Display node summary
   debug:
