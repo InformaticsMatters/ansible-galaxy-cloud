@@ -10,21 +10,17 @@
 
 - name: Set node count facts
   set_fact:
-    active_count: "{{ sinfo_summary.stdout.split('/')[0] }}"
-    idle_count: "{{ sinfo_summary.stdout.split('/')[1] }}"
-    offline_count: "{{ sinfo_summary.stdout.split('/')[2] }}"
-    total_count: "{{ sinfo_summary.stdout.split('/')[3] }}"
+    active_num: "{{ sinfo_summary.stdout.split('/')[0] }}"
+    idle_num: "{{ sinfo_summary.stdout.split('/')[1] }}"
+    offline_num: "{{ sinfo_summary.stdout.split('/')[2] }}"
+    total_num: "{{ sinfo_summary.stdout.split('/')[3] }}"
 
 - name: Display node summary
   debug:
-    msg: |-
-      Active = {{ active_count }}
-      Idle = {{ idle_count }}
-      Offline = {{ offline_count }}
-      Total = {{ total_count }}
+    msg: A={{ active_num }} I={{ idle_num }} O={{ offline_num }} T={{ total_num }}
 
 - name: Check offline and total node count
   assert:
     that:
-    - offline_count|int == 0
-    - total_count|int == worker_count
+    - offline_num|int == 0
+    - total_num|int == worker_count
