@@ -3,15 +3,28 @@
 # A simple Slurm 'sanity check'.
 # This verifies 'sinfo' returns the right number of 'responding' nodes.
 
-- name: Get responding node count
-  shell: sinfo -hr | tr -s ' ' | cut -d' ' -f 4  # noqa 305
-  register: sinfo_responding
+- name: Get node summary
+  shell: sinfo -hs | tr -s ' ' | cut -d' ' -f 4  # noqa 305
+  register: sinfo_summary
   changed_when: false
 
-- name: Display responding node count
-  debug:
-    var: sinfo_responding.stdout
+- name: Set node count facts
+  set_fact:
+    active_count: sinfo_summary.stdout.split('/')[0]|int
+    idle_count: sinfo_summary.stdout.split('/')[1]|int
+    offline_count: sinfo_summary.stdout.split('/')[2]|int
+    total_count: sinfo_summary.stdout.split('/')[3]|int
 
-- name: Check responding node count
+- name: Display node summary
+  debug:
+    msg: |
+      Active = {{ active_count }}
+      Idle = {{ idle_count }}
+      Offline = {{ offline_count }}
+      Total = {{ total_count }}
+
+- name: Check offline and total node count
   assert:
-    that: "{{ sinfo_responding.stdout|int }} == {{ worker_count }}"
+    that:
+    - offline_count == 0
+    - total_count == worker_count
