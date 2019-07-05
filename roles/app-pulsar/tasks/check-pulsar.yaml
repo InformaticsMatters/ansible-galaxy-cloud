@@ -19,7 +19,7 @@
   become: yes
   become_user: pulsar
 
-- name: Display Pulsar output
+- name: Display last line of Pulsar error output
   debug:
     var: pulsar_check.stderr_lines[-1]
   when:
