@@ -8,7 +8,7 @@
     cmd: >-
       pulsar-check
       --private_token '{{ pulsar_token }}'
-      --url='http://localhost:8443'
+      --url='http://localhost:{{ pulsar_port }}'
   args:
     chdir: "{{ venv_path }}"
   changed_when: false
