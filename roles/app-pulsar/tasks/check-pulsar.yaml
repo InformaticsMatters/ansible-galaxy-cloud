@@ -11,5 +11,6 @@
       --url='http://localhost:8443'
   args:
     chdir: "{{ venv_path }}"
+  changed_when: false
   become: yes
   become_user: pulsar
