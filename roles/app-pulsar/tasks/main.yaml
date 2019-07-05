@@ -56,15 +56,15 @@
     dest: /etc/systemd/system/pulsar.service.d/override.conf
   notify: Restart Pulsar
 
-# Only configure pulsar if it doesn't appear to be running...
+# Only configure pulsar if it doesn't appear to be configured...
 
-- name: Check Pulsar Server configuration
+- name: Check Pulsar configuration
   stat:
-    path: "{{ venv_path }}/server.ini"
-  register: server_ini
+    path: "{{ venv_path }}/app.yml"
+  register: app_yml
 
 - include_tasks: create-virtual-environment.yaml
-  when: not server_ini.stat.exists
+  when: not app_yml.stat.exists
 
 - include_tasks: configure-pulsar.yaml
-  when: not server_ini.stat.exists
+  when: not app_yml.stat.exists
