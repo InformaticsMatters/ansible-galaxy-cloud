@@ -14,13 +14,17 @@
   changed_when: false
   register: pulsar_check
   ignore_errors: yes
+  async: 45
+  poll: 5
   become: yes
   become_user: pulsar
 
 - name: Display Pulsar output
   debug:
-    var: pulsar_check
-  when: pulsar_check.rc
+    var: pulsar_check.stderr_lines[-1]
+  when:
+  - pulsar_check.rc
+  - pulsar_check.stderr_lines|length > 0
 
 - name: Assert Pulsar success
   assert:
