@@ -75,6 +75,7 @@
       name: app-pulsar
       tasks_from: worker.yaml
     when: install_pulsar|bool
+
   - include_role:
       name: app-nextflow
       tasks_from: worker.yaml
