@@ -111,4 +111,4 @@
   become: yes
   become_user: pulsar
   when: not server_file.stat.exists
-  notify: Restart Pulsar
+  notify: Start Pulsar
