@@ -26,7 +26,7 @@
 #
 # See "ansible-command-from-inside-virtualenv" on stackoverflow.
 
-- name: Check virtual environment path
+- name: Check virtual environment path ({{ venv_path }})
   stat:
     path: "{{ venv_path }}"
   register: venv_path_stat
@@ -35,12 +35,14 @@
   assert:
     that: venv_path_stat.stat.exists
 
-- name: Manufacture virtual-env execution script
+- name: Manufacture virtual-env execution script ({{ venv_script }})
   template:
     src: venv-exec.sh.j2
-    dest: "{{ venv_path }}/exec.sh"
+    dest: "{{ venv_script }}"
     mode: 0755
     owner: pulsar
+  vars:
+    venv_script: "{{ venv_path }}/exec.sh"
   become: yes
   become_user: pulsar
 

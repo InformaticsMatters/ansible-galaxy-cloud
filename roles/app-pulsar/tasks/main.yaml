@@ -31,10 +31,6 @@
 # Create a Python virtual environment (if required)
 # in which we install Pulsar, configure it and start it.
 
-- name: Set virtual environment location
-  set_fact:
-    venv_path: "{{ volume_mount }}/pulsar/pulsar-env"
-
 - name: Install Pulsar systemd unit file
   template:
     src: pulsar.service.j2

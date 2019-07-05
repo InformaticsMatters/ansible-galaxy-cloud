@@ -1,3 +1,5 @@
 ---
 
 volume_mount: /data
+
+venv_path: "{{ volume_mount }}/pulsar/pulsar-env"

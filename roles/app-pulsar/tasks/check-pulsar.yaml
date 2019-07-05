@@ -1,0 +1,15 @@
+---
+
+# A simple Pulsar 'sanity check'.
+
+- name: Run Pulsar check
+  command: "./exec.sh {{ cmd }}"
+  vars:
+    cmd: >-
+      pulsar-check
+      --private_token '{{ pulsar_token }}'
+      --url='http://localhost:8443'
+  args:
+    chdir: "{{ venv_path }}"
+  become: yes
+  become_user: pulsar
