@@ -58,13 +58,13 @@
 
 # Only configure pulsar if it doesn't appear to be running...
 
-- name: Check Pulsar PID
+- name: Check Pulsar Server configuration
   stat:
-    path: "{{ venv_path }}/paster.pid"
-  register: pulsar_pid
+    path: "{{ venv_path }}/server.ini"
+  register: server_ini
 
 - include_tasks: create-virtual-environment.yaml
-  when: not pulsar_pid.stat.exists
+  when: not server_ini.stat.exists
 
 - include_tasks: configure-pulsar.yaml
-  when: not pulsar_pid.stat.exists
+  when: not server_ini.stat.exists
