@@ -3,16 +3,14 @@ Description = pulsar
 
 [Service]
 Type = forking
-PIDFile = {{ venv_path }}/paster.pid
 WorkingDirectory = {{ venv_path }}
-ExecStart = {{ venv_path }}/exec.sh pulsar -m uwsgi --daemonize /data/pulsar/pulsar-env/uwsgi.log
-ExecStop = {{ venv_path }}/exec.sh pulsar --stop-daemon
+ExecStart = {{ venv_path }}/exec.sh pulsar --mode uwsgi --daemonize {{ venv_path }}/uwsgi.log
 User = pulsar
 Group = pulsar
 Restart = on-failure
-RestartSec = 4
-TimeoutStartSec = 4
-TimeoutStopSec = 8
+RestartSec = 10
+TimeoutStartSec = 10
+TimeoutStopSec = 12
 
 [Install]
 WantedBy = multi-user.target
