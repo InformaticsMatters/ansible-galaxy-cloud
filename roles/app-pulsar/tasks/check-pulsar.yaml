@@ -12,5 +12,16 @@
   args:
     chdir: "{{ venv_path }}"
   changed_when: false
+  register: pulsar_check
+  ignore_errors: yes
   become: yes
   become_user: pulsar
+
+- name: Display Pulsar output
+  debug:
+    var: pulsar_check
+  when: pulsar_check.rc
+
+- name: Assert Pulsar success
+  assert:
+    that: pulsar_check.rc == 0
