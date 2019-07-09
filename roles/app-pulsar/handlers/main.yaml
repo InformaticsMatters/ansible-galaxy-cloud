@@ -4,4 +4,4 @@
   service:
     name: pulsar
     enabled: yes
-    state: reloaded
+    state: started
