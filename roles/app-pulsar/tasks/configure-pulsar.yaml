@@ -105,6 +105,7 @@
       --libdrmaa_path {{ libdrmaa.stdout_lines[0] }}
       --host 0.0.0.0
       --port {{ pulsar_port }}
+      --wsgi_server uwsgi
   args:
     chdir: "{{ venv_path }}"
   become: yes

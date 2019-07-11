@@ -3,10 +3,8 @@ Description = pulsar
 
 [Service]
 Type = forking
-PIDFile = {{ venv_path }}/paster.pid
 WorkingDirectory = {{ venv_path }}
-ExecStart = {{ venv_path }}/exec.sh pulsar --daemon
-ExecStop = {{ venv_path }}/exec.sh pulsar --stop-daemon
+ExecStart = {{ venv_path }}/exec.sh pulsar --mode uwsgi --daemonize {{ venv_path }}/uwsgi.log
 User = pulsar
 Group = pulsar
 Restart = on-failure
