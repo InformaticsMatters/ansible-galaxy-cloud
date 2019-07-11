@@ -1,6 +1,6 @@
 ---
 
-- name: Retart Pulsar
+- name: Restart Pulsar
   service:
     name: pulsar
     enabled: yes
