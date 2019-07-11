@@ -1,0 +1,64 @@
+[server:main]
+use = egg:Paste#http
+port = 8443
+host = 0.0.0.0
+## pem file to use to enable SSL.
+# ssl_pem = host.pem
+
+[app:main]
+paste.app_factory = pulsar.web.wsgi:app_factory
+app_config = %(here)s/app.yml
+
+## Configure uWSGI (if used).
+[uwsgi]
+master = True
+paste-logger = true
+http = 0.0.0.0:{{ pulsar_port }}
+processes = 1
+enable-threads = True
+buffer-size = 16384
+
+## Configure circus and chaussette (if used).
+[circus]
+endpoint = tcp://127.0.0.1:5555
+pubsub_endpoint = tcp://127.0.0.1:5556
+#stats_endpoint = tcp://127.0.0.1:5557
+
+[watcher:web]
+cmd = chaussette --fd $(circus.sockets.web) paste:server.ini
+use_sockets = True
+# Pulsar must be single-process for now...
+numprocesses = 1
+
+[socket:web]
+host = 0.0.0.0
+port = 8443
+
+## Configure Python loggers.
+[loggers]
+keys = root,pulsar
+
+[handlers]
+keys = console
+
+[formatters]
+keys = generic
+
+[logger_root]
+level = INFO
+handlers = console
+
+[logger_pulsar]
+level = DEBUG
+handlers = console
+qualname = pulsar
+propagate = 0
+
+[handler_console]
+class = StreamHandler
+args = (sys.stderr,)
+level = DEBUG
+formatter = generic
+
+[formatter_generic]
+format = %(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(message)s

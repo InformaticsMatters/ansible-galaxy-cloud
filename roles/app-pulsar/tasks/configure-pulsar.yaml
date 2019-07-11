@@ -111,4 +111,14 @@
   become: yes
   become_user: pulsar
   when: not server_file.stat.exists
-  notify: Start Pulsar
+  notify: Retart Pulsar
+
+- name: Replace Pulsar server.ini (socket)
+  template:
+    src: server.ini.j2
+    dest: "{{ venv_path }}/server.ini"
+    owner: pulsar
+    group: pulsar
+    mode: '644'
+  become_user: pulsar
+  notify: Restart Pulsar

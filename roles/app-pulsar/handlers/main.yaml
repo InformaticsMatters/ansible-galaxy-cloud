@@ -1,7 +1,7 @@
 ---
 
-- name: Start Pulsar
+- name: Retart Pulsar
   service:
     name: pulsar
     enabled: yes
-    state: started
+    state: restarted

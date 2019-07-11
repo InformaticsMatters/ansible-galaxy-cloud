@@ -35,7 +35,7 @@
   template:
     src: pulsar.service.j2
     dest: /etc/systemd/system/pulsar.service
-  notify: Start Pulsar
+  notify: Retart Pulsar
 
 # We have to 'work around' the race condition between systemd
 # and pulsar, which is slow at creating its PID file. The
@@ -48,13 +48,13 @@
   file:
     path: /etc/systemd/system/pulsar.service.d
     state: directory
-  notify: Start Pulsar
+  notify: Retart Pulsar
 
 - name: Install Pulsar systemd override file
   copy:
     src: override.conf
     dest: /etc/systemd/system/pulsar.service.d/override.conf
-  notify: Start Pulsar
+  notify: Retart Pulsar
 
 # Only configure pulsar if it doesn't appear to be configured...
 
