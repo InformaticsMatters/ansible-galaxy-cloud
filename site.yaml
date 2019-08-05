@@ -81,6 +81,14 @@
       tasks_from: worker.yaml
     when: install_nextflow|bool
 
+  - include_role:
+      name: geerlingguy.redis
+    vars:
+      redis_bind_interface: 0.0.0.0
+      redis_databases: 1
+      redis_save: []
+    when: install_redis|bool
+
 # Finally, some quick tests....
 
 - hosts: head

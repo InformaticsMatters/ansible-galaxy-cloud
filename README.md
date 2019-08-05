@@ -123,6 +123,7 @@ run the following on a suitably equipped bastion on your cloud provider: -
 
     $ pip install --upgrade pip
     $ pip install -r requirements.txt
+    $ ansible-galaxy install -r requirements.yml
     $ ansible-playbook site.yaml -e "@parameters"
 
 >   You can avoid formatting the shared volume (for instance if
