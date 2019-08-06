@@ -93,8 +93,9 @@
       name: geerlingguy.memcached
     vars:
       memcached_listen_ip: 0.0.0.0
+      memcached_user: xchemservice
       memcached_memory_limit: 28GB
-      memcached_connections: 1
+      memcached_connections: 32
     when: install_memcached|bool
 
 # Finally, some quick tests....

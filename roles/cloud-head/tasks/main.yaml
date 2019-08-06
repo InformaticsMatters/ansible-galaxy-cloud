@@ -34,6 +34,7 @@
     - git
     - nfs-utils
     - nfs-utils-lib
+    - telnet
     - python
     - python-pip
     lock_timeout: 180
