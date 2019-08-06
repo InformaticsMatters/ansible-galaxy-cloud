@@ -89,6 +89,14 @@
       redis_save: []
     when: install_redis|bool
 
+  - include_role:
+      name: geerlingguy.memcached
+    vars:
+      memcached_listen_ip: 0.0.0.0
+      memcached_memory_limit: 28GB
+      memcached_connections: 1
+    when: install_memcached|bool
+
 # Finally, some quick tests....
 
 - hosts: head

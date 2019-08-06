@@ -1,3 +1,4 @@
 ---
 
 - src: geerlingguy.redis
+- src: geerlingguy.memcached
