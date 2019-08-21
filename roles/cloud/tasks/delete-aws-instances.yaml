@@ -44,6 +44,7 @@
 
 - name: Get volume facts
   ec2_vol_facts:
+    region: "{{ aws_region }}"
     filters:
       "tag:Name": "{{ instance_base_name }}-volume"
   register: volume_facts
