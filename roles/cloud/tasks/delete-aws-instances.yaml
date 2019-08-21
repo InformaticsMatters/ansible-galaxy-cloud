@@ -50,6 +50,10 @@
   register: volume_facts
   when: volume_delete|bool
 
+- name: debug
+  debug:
+    var: volume_facts
+
 - name: Delete shared volume
   ec2_vol:
     id: "{{ volume_facts.volumes[0].volume_id }}"
