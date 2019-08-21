@@ -69,6 +69,8 @@
     volume_size: "{{ volume_size_g }}"
     volume_type: gp2
     region: "{{ aws_region }}"
+    tags:
+      Name: "{{ instance_base_name }}-volume"
   when: existing_head_facts.instances|length == 0
 
 # Create the worker nodes

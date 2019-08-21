@@ -2,41 +2,60 @@
 
 # Deletes our cluster.
 
-- name:  Not ready
-  assert:
-    that: 1 == 0
+- name: Get head node facts
+  ec2_instance_facts:
+    region: "{{ aws_region }}"
+    filters:
+      "tag:Name": "{{ instance_base_name }}-head"
+      instance-state-name:
+      - 'running'
+  register: head_facts
+  changed_when: false
 
 - name: Delete head node
-  os_server:
-    auth: "{{ os_auth }}"
-    region_name: "{{ os_region_name }}"
-    name: "{{ instance_base_name }}-head"
+  ec2:
+    region: "{{ aws_region }}"
+    instance_ids:
+    - "{{ head_facts.instances[0].instance_id }}"
     state: absent
+  when: head_facts.instances|length == 1
 
-# Workers can be called "{{ instance_base_name }}-worker" when there's just one
-# or "{{ instance_base_name }}-worker-<N>" when there are two or more...
+# Workers...
 
 - name: Get worker node facts
-  os_server_facts:
-    auth: "{{ os_auth }}"
-    region_name: "{{ os_region_name }}"
-    server: "{{ instance_base_name }}-worker*"
+  ec2_instance_facts:
+    region: "{{ aws_region }}"
+    filters:
+      "tag:Name": "{{ instance_base_name }}-worker"
+      instance-state-name:
+      - 'running'
+  register: worker_facts
+  changed_when: false
 
 - name: Delete worker nodes
-  os_server:
-    auth: "{{ os_auth }}"
-    region_name: "{{ os_region_name }}"
-    name: "{{ item['name'] }}"
+  ec2:
+    region: "{{ aws_region }}"
+    instance_ids:
+    - "{{ item.instance_id }}"
     state: absent
-  loop: "{{ openstack_servers }}"
+  loop: "{{ worker_facts.instances }}"
   no_log: yes
+  when: worker_facts.instances|length > 0
+
+- name: Get volume facts
+  ec2_vol_facts:
+    filters:
+      "tag:Name": "{{ instance_base_name }}-volume"
+  register: volume_facts
+  when: volume_delete|bool
 
 - name: Delete shared volume
-  os_volume:
-    auth: "{{ os_auth }}"
-    display_name: "{{ instance_base_name }}-volume"
+  ec2_vol:
+    id: "{{ volume_facts.instances[0].volume_id }}"
     state: absent
-  when: volume_delete|bool
+  when:
+  - volume_delete|bool
+  - volume_facts.instances|length == 1
 
 - name: Display shared volume caution
   debug:
