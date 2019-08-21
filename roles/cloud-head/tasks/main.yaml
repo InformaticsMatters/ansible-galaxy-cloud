@@ -27,18 +27,21 @@
     owner: root
     group: root
 
-- name: Make yum cache
-  command: yum makecache
+- name: Install EPEL release
+  yum:
+    name:
+    - epel-release
+    update_cache: yes
 
 - name: Install head packages
   yum:
     name:
-    - epel-release
     - git
     - nfs-utils
     - telnet
     - python
     - python-pip
+    update_cache: yes
 
 - name: Install Python packages
   pip:
