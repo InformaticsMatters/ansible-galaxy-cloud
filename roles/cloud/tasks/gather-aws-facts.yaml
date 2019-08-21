@@ -1,0 +1,64 @@
+---
+
+# Get information about the node
+# We simply want its IP address
+# so we can add it to the 'head' inventory group
+
+- name: Get head node facts
+  ec2_instance_facts:
+    region: "{{ aws_region }}"
+    filters:
+      "tag:Name": "{{ instance_base_name }}-head"
+      instance-state-name:
+      - 'running'
+  register: head_facts
+  when: gather_head_facts|bool
+
+- name: Adjust head node group
+  add_host:
+    groups: head
+    name: "{{ head_facts.instances[0].public_ip_address }}"
+  changed_when: false
+  when: gather_head_facts|bool
+
+- name: Set head node facts
+  set_fact:
+    head_addr: "{{ head_facts.instances[0].public_ip_address }}"
+    head_private_v4: "{{ head_facts.instances[0].private_ip_address }}"
+    base_name: "{{ instance_base_name }}"
+  when: gather_head_facts|bool
+
+# Get information about the worker nodes
+# We simply want their IP addresses
+# so we can add them to the 'worker' inventory group
+
+- name: Get worker node facts
+  ec2_instance_facts:
+    region: "{{ aws_region }}"
+    filters:
+      "tag:Name": "{{ instance_base_name }}-worker"
+      instance-state-name:
+      - 'running'
+  register: worker_facts
+  when: gather_worker_facts|bool
+
+- name: Adjust worker node group
+  add_host:
+    groups: worker
+    name: "{{ item.private_ip_address }}"
+  loop: "{{ worker_facts.instances }}"
+  no_log: yes
+  changed_when: false
+  when: gather_worker_facts|bool
+
+# Now set a 'worker_nodes' fact.
+# This contains worker names, addresses and vCPU value.
+
+- name: Create worker node fact
+  set_fact:
+    worker_nodes: "{{ worker_nodes|default([]) + [{'addr': item.private_ip_address, 'name': item.private_dns_name, 'vcpus': vcpus}] }}"
+  vars:
+    vcpus: "{{ worker_facts.instances[0]['cpu_options'].core_count }}"
+  loop: "{{ worker_facts.instances }}"
+  no_log: yes
+  when: gather_worker_facts|bool

@@ -12,6 +12,7 @@
     - os_auth_url is defined
     - head_addr is defined
     - head_addr|ipaddr
+    - worker_count > 0
 
 - name: Check private key-pair (id_rsa)
   stat:

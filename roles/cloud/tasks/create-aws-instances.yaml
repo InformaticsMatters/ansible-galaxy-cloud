@@ -1,0 +1,88 @@
+---
+
+# Creates our cluster on AWS.
+
+- name: Assert cloud variables
+  assert:
+    that:
+    - worker_count > 0
+
+- name: Check private key-pair (id_rsa)
+  stat:
+    path: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
+  register: priv_key
+
+- name: Check public key-pair (id_rsa.pub)
+  stat:
+    path: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa.pub"
+  register: pub_key
+
+- name: Assert key-pair exists
+  assert:
+    that:
+    - priv_key.stat.exists
+    - pub_key.stat.exists
+
+- name: Install public key (id_rsa.pub)
+  ec2_key:
+    name: "{{ instance_base_name }}-key"
+    key_material: "{{ lookup('file', public_key_file) }}"
+    region: "{{ aws_region }}"
+  vars:
+    public_key_file: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa.pub"
+
+# Create the head node.
+
+- name: Get head node facts
+  ec2_instance_facts:
+    region: "{{ aws_region }}"
+    filters:
+      "tag:Name": "{{ instance_base_name }}-head"
+      instance-state-name:
+      - 'pending'
+      - 'running'
+      - 'stopped'
+      - 'stopping'
+  register: existing_head_facts
+  changed_when: false
+
+- name: Create head node
+  ec2:
+    region: "{{ aws_region }}"
+    key_name: "{{ instance_base_name }}-key"
+    instance_type: "{{ head_type }}"
+    image: "{{ aws_region_image_id }}"
+    group:
+    - "{{ instance_base_name }}-sg"
+    wait: yes
+    vpc_subnet_id: "{{ aws_vpc_subnet_id }}"
+    assign_public_ip: yes
+    instance_tags:
+      Name: "{{ instance_base_name }}-head"
+      graph: "{{ instance_base_name }}"
+  register: head_facts
+  when: existing_head_facts.instances|length == 0
+
+- name: Create and attach shared volume
+  ec2_vol:
+    instance: "{{ head_facts.instances[0].id }}"
+    volume_size: "{{ volume_size_g }}"
+  when: existing_head_facts.instances|length == 0
+
+# Create the worker nodes
+
+- name: Create worker nodes
+  ec2:
+    region: "{{ aws_region }}"
+    key_name: "{{ instance_base_name }}-key"
+    instance_type: "{{ worker_type }}"
+    image: "{{ aws_region_image_id }}"
+    count: "{{ worker_count }}"
+    group:
+    - "{{ instance_base_name }}-sg"
+    wait: yes
+    vpc_subnet_id: "{{ aws_vpc_subnet_id }}"
+    instance_tags:
+      Name: "{{ instance_base_name }}-worker"
+      graph: "{{ instance_base_name }}"
+  when: existing_head_facts.instances|length == 0

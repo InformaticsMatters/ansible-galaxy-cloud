@@ -1,0 +1,44 @@
+---
+
+# Deletes our cluster.
+
+- name:  Not ready
+  assert:
+    that: 1 == 0
+
+- name: Delete head node
+  os_server:
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region_name }}"
+    name: "{{ instance_base_name }}-head"
+    state: absent
+
+# Workers can be called "{{ instance_base_name }}-worker" when there's just one
+# or "{{ instance_base_name }}-worker-<N>" when there are two or more...
+
+- name: Get worker node facts
+  os_server_facts:
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region_name }}"
+    server: "{{ instance_base_name }}-worker*"
+
+- name: Delete worker nodes
+  os_server:
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region_name }}"
+    name: "{{ item['name'] }}"
+    state: absent
+  loop: "{{ openstack_servers }}"
+  no_log: yes
+
+- name: Delete shared volume
+  os_volume:
+    auth: "{{ os_auth }}"
+    display_name: "{{ instance_base_name }}-volume"
+    state: absent
+  when: volume_delete|bool
+
+- name: Display shared volume caution
+  debug:
+    msg: "CAUTION: Disk {{ instance_base_name }}-volume HAS NOT BEEN DELETED"
+  when: not volume_delete|bool
