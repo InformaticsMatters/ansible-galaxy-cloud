@@ -7,7 +7,8 @@
     name:
     - epel-release
     - munge
-    lock_timeout: 180
+    - munge-libs
+    - munge-devel
   notify: Restart MUNGE
 
 # Prepare MUNGE
