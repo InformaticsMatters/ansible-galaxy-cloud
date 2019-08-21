@@ -52,6 +52,7 @@
 
 - name: Delete shared volume
   ec2_vol:
+    region: "{{ aws_region }}"
     id: "{{ volume_facts.volumes[0].id }}"
     state: absent
   when:
