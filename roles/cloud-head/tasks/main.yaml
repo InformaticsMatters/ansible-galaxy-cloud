@@ -33,16 +33,14 @@
     - epel-release
     - git
     - nfs-utils
-    - nfs-utils-lib
     - telnet
     - python
     - python-pip
-    lock_timeout: 180
 
 - name: Install Python packages
   pip:
     name:
-    - ansible==2.7.11
+    - ansible==2.8.4
     - pyOpenSSL==19.0.0
 
 # We need to be able to resolve between our name and IP
