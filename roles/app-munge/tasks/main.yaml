@@ -7,8 +7,6 @@
     name:
     - epel-release
     - munge
-    - munge-libs
-    - munge-devel
   notify: Restart MUNGE
 
 # Prepare MUNGE

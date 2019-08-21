@@ -35,7 +35,6 @@
     - python-virtualenv
     - readline-devel
     - rpm-build
-    lock_timeout: 180
   when: not rpmbuild.stat.exists
 
 - name: Get slurm

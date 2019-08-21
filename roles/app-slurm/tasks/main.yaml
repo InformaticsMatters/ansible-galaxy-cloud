@@ -17,7 +17,6 @@
     - lua
     - openssl
     - numactl
-    lock_timeout: 180
 
 # We install slurm from a an RPM we build from source
 # in the build-slurm playbook. The RPM's been put on the shared (data) volume
