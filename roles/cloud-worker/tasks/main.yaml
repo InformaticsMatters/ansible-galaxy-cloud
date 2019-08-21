@@ -27,13 +27,17 @@
     owner: root
     group: root
 
-- name: Install worker packages
-  package:
+- name: Install EPEL release
+  yum:
     name:
     - epel-release
+    update_cache: yes
+
+- name: Install worker packages
+  yum:
+    name:
     - nfs-utils
-    - nfs-utils-lib
-    lock_timeout: 180
+    update_cache: yes
 
 # We need to be able to resolve between our name and IP
 # on the head node. Workers also need to be able to
