@@ -28,7 +28,7 @@
     group: root
 
 - name: Install head packages
-  package:
+  yum:
     name:
     - epel-release
     - git
@@ -36,6 +36,7 @@
     - telnet
     - python
     - python-pip
+    update_cache: yes
 
 - name: Install Python packages
   pip:
