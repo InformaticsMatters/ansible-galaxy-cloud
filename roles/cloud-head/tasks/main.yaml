@@ -27,9 +27,8 @@
     owner: root
     group: root
 
-- name: Update yum cache
-  yum:
-    update_cache: yes
+- name: Make yum cache
+  command: yum makecache
 
 - name: Install head packages
   yum:
@@ -40,7 +39,6 @@
     - telnet
     - python
     - python-pip
-    update_cache: yes
 
 - name: Install Python packages
   pip:
