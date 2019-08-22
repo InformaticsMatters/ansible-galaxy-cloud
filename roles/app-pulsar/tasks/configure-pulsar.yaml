@@ -120,5 +120,6 @@
     owner: pulsar
     group: pulsar
     mode: '644'
+  become: yes
   become_user: pulsar
   notify: Restart Pulsar

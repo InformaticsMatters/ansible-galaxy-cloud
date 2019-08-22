@@ -31,7 +31,7 @@
   vars:
     public_key_file: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa.pub"
 
-# Create the head node.
+# Create the head node.
 
 - name: Get head node facts
   ec2_instance_facts:
@@ -73,7 +73,7 @@
       Name: "{{ instance_base_name }}-volume"
   when: existing_head_facts.instances|length == 0
 
-# Create the worker nodes
+# Create the worker nodes
 
 - name: Create worker nodes
   ec2:

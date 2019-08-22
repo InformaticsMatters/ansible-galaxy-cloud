@@ -40,9 +40,9 @@ worker_count: 35
 # This is attached to the head not and exposed
 # as an NFS-share to the worker nodes in the cluster.
 volume_size_g: 8000
-# Format the volume (ext4) prior to the first mount?
+# Format the volume (ext4) prior to the first mount?
 volume_initialise: yes
-# Delete the volume when the cluster is deleted?
+# Delete the volume when the cluster is deleted?
 volume_delete: yes
 
 # Application control.

@@ -44,7 +44,7 @@
     display_name: "{{ instance_base_name }}-volume"
     display_description: Shared volume for the Fragment cluster
 
-# Create the head node but allow for failure.
+# Create the head node but allow for failure.
 # We give up if, after 5 attempts, we cannot create the instance.
 
 - name: Display head node flavour
@@ -82,7 +82,7 @@
     server: "{{ instance_base_name }}-head"
     volume: "{{ instance_base_name }}-volume"
 
-# Create the worker nodes but, as before, we allow for failure.
+# Create the worker nodes but, as before, we allow for failure.
 # We give up if, after 5 attempts, we cannot create an instance.
 
 - name: Display worker node flavour

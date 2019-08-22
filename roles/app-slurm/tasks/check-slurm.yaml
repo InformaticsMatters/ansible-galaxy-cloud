@@ -4,7 +4,7 @@
 # This verifies 'sinfo' returns the right number of 'responding' nodes.
 
 - name: Get node summary
-  shell: sinfo -hs | tr -s ' ' | cut -d' ' -f 4  # noqa 305
+  shell: sinfo -hs | tr -s ' ' | cut -d' ' -f 4  # noqa 305 306 501
   register: sinfo_summary
   changed_when: false
 
