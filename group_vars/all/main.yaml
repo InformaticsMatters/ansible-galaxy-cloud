@@ -38,7 +38,7 @@ head_type: l1.6xl
 head_image_name: ScientificLinux-7-NoGui
 head_addr: 130.246.215.45
 
-worker_type: c3.xlarge
+worker_type: c1.xxlarge
 worker_image_name: ScientificLinux-7-NoGui
 worker_count: 35
 
