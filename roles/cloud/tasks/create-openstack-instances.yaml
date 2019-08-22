@@ -73,7 +73,7 @@
 - name: Display 'create head node' output
   debug:
     var: item
-  loop: head.stdout_lines
+  loop: "{{ head.stdout_lines }}"
 
 - name: Attach the shared volume to the head node
   os_server_volume:
@@ -112,4 +112,4 @@
 - name: Display 'create worker nodes' output
   debug:
     var: item
-  loop: workers.stdout_lines
+  loop: "{{ workers.stdout_lines }}"
