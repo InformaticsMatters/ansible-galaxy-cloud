@@ -121,6 +121,8 @@ def create(conn,
     if conn.get_server(name_or_id=server_name):
         # Yes!
         # Success, unchanged
+        if verbose:
+            print('Server {} already exists'.format(server_name))
         return ServerResult(True, False, 0)
 
     # The number of times we had to re-create this server instance.
