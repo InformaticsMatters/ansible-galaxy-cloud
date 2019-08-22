@@ -26,6 +26,7 @@ instance_network: xchem-private
 # c3.medium          4   8   40
 # c3.large           8  16   80
 # c3.xlarge         16  32  160
+# l1.6xl            60 360  750
 
 # The following amounts to a total allocation of: -
 #
@@ -33,18 +34,18 @@ instance_network: xchem-private
 #   560 Gi RAM
 #  2760 Gi disk
 
-head_type: c1.3xl
+head_type: l1.6xl
 head_image_name: ScientificLinux-7-NoGui
 head_addr: 130.246.215.45
 
 worker_type: c3.xlarge
 worker_image_name: ScientificLinux-7-NoGui
-worker_count: 16
+worker_count: 35
 
 # The size of the 'shared' volume (G).
 # This is attached to the head not and exposed
 # as an NFS-share to the worker nodes in the cluster.
-volume_size_g: 4000
+volume_size_g: 8000
 # Format the volume (ext4) prior to the first mount?
 volume_initialise: yes
 # Delete the volume when the cluster is deleted?
