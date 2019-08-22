@@ -49,6 +49,7 @@ import openstack
 # failures  The number of server creation failures creating the server
 ServerResult = namedtuple('ServerResult', 'success changed failures')
 
+
 def positive_int_non_zero(value):
     """Used as an argparse type validator.
     Checks the value is a suitable integer.
@@ -122,7 +123,7 @@ def create(conn,
         # Yes!
         # Success, unchanged
         if verbose:
-            print('Server {} already exists'.format(server_name))
+            print('Server "{}" already exists'.format(server_name))
         return ServerResult(True, False, 0)
 
     # The number of times we had to re-create this server instance.
@@ -132,9 +133,9 @@ def create(conn,
     success = False
     while not success and attempt <= attempts:
 
-        server_create_begin_time = time.time()
+        create_begin_time = time.time()
         if verbose:
-            print('Creating {}...'.format(server_name))
+            print('Creating server "{}"...'.format(server_name))
 
         try:
             server = conn.compute.create_server(name=server_name,
@@ -150,9 +151,10 @@ def create(conn,
             print(ex)
             return ServerResult(False, False, 0)
 
+        create_end_time = time.time()
         if verbose:
-            server_create_duration = time.time() - server_create_begin_time
-            print('Create duration: {}S'.format(server_create_duration))
+            create_duration = create_end_time - create_begin_time
+            print('Create duration: {}S'.format(create_duration))
 
         new_server = None
         try:
@@ -165,6 +167,11 @@ def create(conn,
             print('{}'.format(rf_e))
         except openstack.exceptions.ResourceTimeout:
             print('ERROR: ResourceTimeout/create ({})'.format(server_name))
+
+        wait_end_time = time.time()
+        if verbose:
+            wait_duration = create_end_time - wait_end_time
+            print('Wait duration: {}S'.format(wait_duration))
 
         if new_server:
             success = True
