@@ -154,7 +154,7 @@ def create(conn,
         create_end_time = time.time()
         if verbose:
             create_duration = create_end_time - create_begin_time
-            print('Create duration: {}S'.format(create_duration))
+            print('Create duration: {0:.2f}S'.format(create_duration))
 
         new_server = None
         try:
@@ -171,7 +171,7 @@ def create(conn,
         wait_end_time = time.time()
         if verbose:
             wait_duration = wait_end_time - create_end_time
-            print('Wait duration: {}S'.format(wait_duration))
+            print('Wait duration: {0:.2f}S'.format(wait_duration))
 
         if new_server:
             success = True
