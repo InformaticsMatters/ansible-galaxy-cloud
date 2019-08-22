@@ -34,7 +34,7 @@ head_addr: 130.246.215.45
 
 worker_type: c1.xxlarge
 worker_image_name: ScientificLinux-7-NoGui
-worker_count: 37
+worker_count: 35
 
 # The size of the 'shared' volume (G).
 # This is attached to the head not and exposed
