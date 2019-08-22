@@ -47,7 +47,6 @@
   pip:
     name:
     - ansible==2.8.4
-    - pyOpenSSL==19.0.0
 
 # We need to be able to resolve between our name and IP
 # on the head node. Workers also need to be able to
