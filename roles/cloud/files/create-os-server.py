@@ -130,8 +130,10 @@ def create(conn,
     success = False
     while not success and attempt <= attempts:
 
+        server_create_begin_time = time.time()
         if verbose:
             print('Creating {}...'.format(server_name))
+
         try:
             server = conn.compute.create_server(name=server_name,
                                                 image_id=image.id,
@@ -145,6 +147,10 @@ def create(conn,
             print('ERROR: HttpException ({})'.format(server_name))
             print(ex)
             return ServerResult(False, False, 0)
+
+        if verbose:
+            server_create_duration = time.time() - server_create_begin_time
+            print('Create duration: {}S'.format(server_create_duration))
 
         new_server = None
         try:
