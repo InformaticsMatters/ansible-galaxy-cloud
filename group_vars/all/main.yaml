@@ -6,7 +6,7 @@ provider: openstack
 
 # A string prepended to each cloud object we create
 # (e.g. the data volume and compute instances)
-instance_base_name: cluster
+instance_base_name: fragmentor
 # The network for the instances
 instance_network: xchem-private
 
