@@ -170,7 +170,7 @@ def create(conn,
 
         wait_end_time = time.time()
         if verbose:
-            wait_duration = create_end_time - wait_end_time
+            wait_duration = wait_end_time - create_end_time
             print('Wait duration: {}S'.format(wait_duration))
 
         if new_server:
