@@ -9,6 +9,8 @@
       "tag:Name": "{{ instance_base_name }}-head"
       instance-state-name:
       - 'running'
+    aws_access_key: "{{ aws_access_key_id }}"
+    aws_secret_key: "{{ aws_secret_access_key }}"
   register: head_facts
   changed_when: false
 
@@ -18,6 +20,8 @@
     instance_ids:
     - "{{ head_facts.instances[0].instance_id }}"
     state: absent
+    aws_access_key: "{{ aws_access_key_id }}"
+    aws_secret_key: "{{ aws_secret_access_key }}"
   when: head_facts.instances|length == 1
 
 # Workers...
@@ -29,6 +33,8 @@
       "tag:Name": "{{ instance_base_name }}-worker"
       instance-state-name:
       - 'running'
+    aws_access_key: "{{ aws_access_key_id }}"
+    aws_secret_key: "{{ aws_secret_access_key }}"
   register: worker_facts
   changed_when: false
 
@@ -38,6 +44,8 @@
     instance_ids:
     - "{{ item.instance_id }}"
     state: absent
+    aws_access_key: "{{ aws_access_key_id }}"
+    aws_secret_key: "{{ aws_secret_access_key }}"
   loop: "{{ worker_facts.instances }}"
   no_log: yes
   when: worker_facts.instances|length > 0
@@ -47,6 +55,8 @@
     region: "{{ aws_region }}"
     filters:
       "tag:Name": "{{ instance_base_name }}-volume"
+    aws_access_key: "{{ aws_access_key_id }}"
+    aws_secret_key: "{{ aws_secret_access_key }}"
   register: volume_facts
   when: volume_delete|bool
 
@@ -55,6 +65,8 @@
     region: "{{ aws_region }}"
     id: "{{ volume_facts.volumes[0].id }}"
     state: absent
+    aws_access_key: "{{ aws_access_key_id }}"
+    aws_secret_key: "{{ aws_secret_access_key }}"
   when:
   - volume_delete|bool
   - volume_facts.volumes|length == 1

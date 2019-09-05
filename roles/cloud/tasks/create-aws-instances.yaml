@@ -105,6 +105,7 @@
     - "{{ instance_base_name }}-sg"
     wait: yes
     vpc_subnet_id: "{{ aws_vpc_subnet_id }}"
+    assign_public_ip: no
     instance_tags:
       Name: "{{ instance_base_name }}-worker"
       graph: "{{ instance_base_name }}"
