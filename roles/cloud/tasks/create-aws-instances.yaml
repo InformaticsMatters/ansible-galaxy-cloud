@@ -5,7 +5,7 @@
 - name: Assert cloud variables
   assert:
     that:
-    - aws_access_key is defined
+    - aws_access_key_id is defined
     - worker_count > 0
 
 - name: Check private key-pair (id_rsa)
@@ -29,8 +29,8 @@
     name: "{{ instance_base_name }}-key"
     key_material: "{{ lookup('file', public_key_file) }}"
     region: "{{ aws_region }}"
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
+    aws_access_key: "{{ aws_access_key_id }}"
+    aws_secret_key: "{{ aws_secret_access_key }}"
   vars:
     public_key_file: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa.pub"
 
@@ -46,8 +46,8 @@
       - 'running'
       - 'stopped'
       - 'stopping'
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
+    aws_access_key: "{{ aws_access_key_id }}"
+    aws_secret_key: "{{ aws_secret_access_key }}"
   register: existing_head_facts
   changed_when: false
 
@@ -70,8 +70,8 @@
     instance_tags:
       Name: "{{ instance_base_name }}-head"
       graph: "{{ instance_base_name }}"
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
+    aws_access_key: "{{ aws_access_key_id }}"
+    aws_secret_key: "{{ aws_secret_access_key }}"
   register: head_facts
   when: existing_head_facts.instances|length == 0
 
@@ -83,8 +83,8 @@
     region: "{{ aws_region }}"
     tags:
       Name: "{{ instance_base_name }}-volume"
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
+    aws_access_key: "{{ aws_access_key_id }}"
+    aws_secret_key: "{{ aws_secret_access_key }}"
   when: existing_head_facts.instances|length == 0
 
 # Create the worker nodes
@@ -108,6 +108,6 @@
     instance_tags:
       Name: "{{ instance_base_name }}-worker"
       graph: "{{ instance_base_name }}"
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
+    aws_access_key: "{{ aws_access_key_id }}"
+    aws_secret_key: "{{ aws_secret_access_key }}"
   when: existing_head_facts.instances|length == 0
