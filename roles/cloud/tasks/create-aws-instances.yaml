@@ -52,6 +52,11 @@
     key_name: "{{ instance_base_name }}-key"
     instance_type: "{{ head_type }}"
     image: "{{ aws_region_image_id }}"
+    volumes:
+    - device_name: /dev/sda1
+      delete_on_termination: yes
+      volume_type: gp2
+      volume_size: 8
     group:
     - "{{ instance_base_name }}-sg"
     wait: yes
@@ -81,6 +86,11 @@
     key_name: "{{ instance_base_name }}-key"
     instance_type: "{{ worker_type }}"
     image: "{{ aws_region_image_id }}"
+    volumes:
+    - device_name: /dev/sda1
+      delete_on_termination: yes
+      volume_type: gp2
+      volume_size: 8
     count: "{{ worker_count }}"
     group:
     - "{{ instance_base_name }}-sg"
