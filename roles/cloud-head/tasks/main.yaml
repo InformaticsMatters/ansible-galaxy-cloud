@@ -32,6 +32,7 @@
     name:
     - epel-release
     update_cache: yes
+    lock_timeout: 240
 
 - name: Install head packages
   yum:
