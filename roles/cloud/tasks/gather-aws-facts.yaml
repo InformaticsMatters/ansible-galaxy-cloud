@@ -11,6 +11,8 @@
       "tag:Name": "{{ instance_base_name }}-head"
       instance-state-name:
       - 'running'
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
   register: head_facts
   when: gather_head_facts|bool
 
@@ -39,6 +41,8 @@
       "tag:Name": "{{ instance_base_name }}-worker"
       instance-state-name:
       - 'running'
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
   register: worker_facts
   when: gather_worker_facts|bool
 
