@@ -83,12 +83,25 @@ Inspect the [setenv-template.sh](setenv-template.sh) file in the root of the
 project to see if there are any variables you need to define. Instructions for
 providing these variables can be found in the template file.
 
-### Prerequisite - playbook configuration
-The playbook relies on a number of _roles_ in the project. Where appropriate,
+The easiest way to over-ride the built-in values is to provide your
+own YAML-based [parameters] file (called `parameters`). The project
+`parameters` file is excluded from the repository using `.gitignore`.
+To define your own shared volume size you could provide the following in
+a `parameters` file: -
+
+    volume_size_g: 3000
+
+...and add the file to your Ansible command-line using `-e "@parameters"`
+
+The playbooks rely on a number of _roles_ in the project. Where appropriate,
 each role exposes its key variables in a corresponding `defaults/main.yaml`
 file but the main (common) variables have been placed in
 [group_vars/all/main.yaml](group_vars/all/main.yaml).
 
+>   You are encouraged to review all the variables so that you can decide
+    whether you need to provide your own values for any of them.  
+
+### Prerequisite - playbook variables (OpenStack)
 At the very least you should provide your own values for: -
 
 -   `instance_base_name`. A tag prepended to the cloud objects created
@@ -99,18 +112,17 @@ At the very least you should provide your own values for: -
 -   `worker_count`. The number of worker instances that will be put in the
     cluster.
 
->   You are encouraged to review all the variables so that you can decide
-    whether you need to provide your own values for any of them.  
+### Prerequisite - playbook variables (AWS)
+At the very least you should provide your own values for: -
 
-The easiest way to over-ride the built-in values is to provide your
-own YAML-based [parameters] file (called `parameters`). The project
-`parameters` file is excluded from the repository using `.gitignore`.
-To define your own shared volume size you could provide the following in
-a `parameters` file: -
-
-    volume_size_g: 3000
-
-...and add the file to your Ansible command-line using `-e "@parameters"`
+-   `instance_base_name`. A tag prepended to the cloud objects created
+    (instances and volumes)
+-   `aws_vpc_subnet_id`. the ID of your VPC.
+-   `head_type`
+-   `worker_type`
+-   `volume_device`
+-   `worker_count`. The number of worker instances that will be put in the
+    cluster.
 
 ### Installing public SSH keys
 Any `.pub` files found in the project's root directory will be considered
