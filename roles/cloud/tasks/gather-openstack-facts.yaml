@@ -26,7 +26,7 @@
   set_fact:
     head_addr: "{{ openstack_servers[0].interface_ip }}"
     head_private_v4: "{{ openstack_servers[0].private_v4 }}"
-    base_name: "{{ instance_base_name }}"
+    head_name: "{{ instance_base_name }}-head"
   when: gather_head_facts|bool
 
 # Get information about the worker node 'flavour'.

@@ -1,37 +1,22 @@
-SlurmctldHost={{ head_private_v4 }}
+SlurmctldHost={{ base_name }}({{ head_addr }})
 
 AccountingStorageType=accounting_storage/none
 AuthType=auth/munge
 ClusterName=fragmentor
+JobAcctGatherType=jobacct_gather/none
+MpiDefault=none
+ProctrackType=proctrack/cgroup
+ReturnToService=2
 SchedulerType=sched/backfill
-#SelectType=select/linear
+SelectType=select/cons_res
+SelectTypeParameters=CR_Core
 SlurmUser=slurm
-#SlurmctldPort=7002
-#SlurmctldTimeout=300
-#SlurmdPort=7003
 SlurmdSpoolDir=/var/spool/slurmd.spool
 SlurmdTimeout=300
 StateSaveLocation=/var/spool/slurm.state
 SwitchType=switch/none
-TreeWidth=50
-
-MpiDefault=none
-ProctrackType=proctrack/cgroup
-ReturnToService=2
-#SlurmctldPidFile=/var/run/slurmctld.pid
-#SlurmdPidFile=/var/run/slurmd.pid
-#SlurmdSpoolDir=/var/spool/slurmd
-#SlurmUser=slurm
-#StateSaveLocation=/var/spool/slurmd
-#SwitchType=switch/none
 TaskPlugin=task/affinity
-
-#FastSchedule=1
-#SchedulerType=sched/backfill
-SelectType=select/cons_res
-SelectTypeParameters=CR_Core
-
-JobAcctGatherType=jobacct_gather/none
+TreeWidth=50
 
 NodeName=DEFAULT State=UNKNOWN
 {% for node in worker_nodes %}
