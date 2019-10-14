@@ -7,7 +7,7 @@
   tasks:
   - include_role:
       name: cloud
-      tasks_from: gather-openstack-facts.yaml
+      tasks_from: gather-{{ provider }}-facts.yaml
     vars:
       gather_worker_facts: no
 
