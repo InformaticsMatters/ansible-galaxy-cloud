@@ -136,6 +136,7 @@ run the following on a suitably equipped bastion on your cloud provider: -
     $ pip install --upgrade pip
     $ pip install -r requirements.txt
     $ ansible-galaxy install -r requirements.yml
+    
     $ ansible-playbook site.yaml -e "@parameters"
 
 >   You can avoid formatting the shared volume (for instance if
@@ -151,6 +152,10 @@ run the following on a suitably equipped bastion on your cloud provider: -
 You can run separate 'sanity checks' with the `site-check` playbook: -
 
     $ ansible-playbook site-check.yaml -e "@parameters"
+
+>   The check ensures that slurm's `sinfo` command, when run on the head node,
+    does not report any _offline_ nodes and that all the total number of
+    nodes matches your `worker_count` value.
 
 And, to destroy the cluster: -
 
