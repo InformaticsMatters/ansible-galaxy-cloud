@@ -60,7 +60,11 @@
     regexp: "{{ line }}"
     line: "{{ line }}"
   vars:
-    line: "{{ hostvars['localhost']['head_private_v4'] }} {{ hostvars['localhost']['base_name'] }}-head"
+    line: "{{ hostvars['localhost']['head_private_v4'] }} {{ hostvars['localhost']['head_name'] }}"
+
+- name: Set hostname (head)
+  hostname:
+    name: "{{ hostvars['localhost']['head_name'] }}"
 
 - name: Adjust /etc/hosts (worker)
   lineinfile:
