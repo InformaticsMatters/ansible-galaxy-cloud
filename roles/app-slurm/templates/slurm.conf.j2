@@ -18,6 +18,10 @@ SwitchType=switch/none
 TaskPlugin=task/affinity
 TreeWidth=50
 
+# List all the nodes in the cluster, one per line.
+# Each node automatically becomes part of the same (single) partition
+# (as its 'Nodes' value is set to 'ALL').
+
 NodeName=DEFAULT State=UNKNOWN
 {% for node in worker_nodes %}
 NodeName={{ node.name }} NodeAddr={{ node.addr }} CPUs={{ node.vcpus }}
