@@ -10,7 +10,7 @@
 
 - name: Set MUNGE key filename
   set_fact:
-    munge_key_filename: "{{ hostvars['localhost']['base_name'] }}.munge.key"
+    munge_key_filename: "{{ hostvars['localhost']['head_name'] }}.munge.key"
   delegate_to: localhost
 
 - name: Check local MUNGE file
