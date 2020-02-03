@@ -18,8 +18,8 @@ for a shared filesystem between the Galaxy and Slurm environments.
 Creating a complete cluster takes approx 15 mins depending on the number of
 nodes.
 
-Singularity is deployed to the Slurm cluster allowing jos to be run using
-Singularity containers. Currently Pulsar is not configured to use Singularity
+Singularity is deployed to the Slurm cluster allowing jobs to be run using
+that format of container. Currently Pulsar is not configured to use Singularity
 containers and instead deploys tool dependencies using `conda` but we aim to
 switch to all execution using Singularity in the near future.
 
