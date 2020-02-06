@@ -9,23 +9,27 @@
 # so we can add it to the 'head' inventory group
 
 - name: Get head node facts
-  os_server_facts:
+  os_server_info:
     auth: "{{ os_auth }}"
     region_name: "{{ os_region_name }}"
     server: "{{ instance_base_name }}-head"
+  register: s_info
   when: gather_head_facts|bool
+
+- debug:
+    var: s_info
 
 - name: Adjust head node group
   add_host:
     groups: head
-    name: "{{ openstack_servers[0].interface_ip }}"
+    name: "{{ s_info[0].interface_ip }}"
   changed_when: false
   when: gather_head_facts|bool
 
 - name: Set head node facts
   set_fact:
-    head_addr: "{{ openstack_servers[0].interface_ip }}"
-    head_private_v4: "{{ openstack_servers[0].private_v4 }}"
+    head_addr: "{{ s_info[0].interface_ip }}"
+    head_private_v4: "{{ s_info[0].private_v4 }}"
     head_name: "{{ instance_base_name }}-head"
   when: gather_head_facts|bool
 
@@ -48,17 +52,18 @@
 # or "{{ instance_base_name }}-worker-<N>" when there are two or more...
 
 - name: Get worker node facts
-  os_server_facts:
+  os_server_info:
     auth: "{{ os_auth }}"
     region_name: "{{ os_region_name }}"
     server: "{{ instance_base_name }}-worker*"
+  register: s_info
   when: gather_worker_facts|bool
 
 - name: Adjust worker node group
   add_host:
     groups: worker
     name: "{{ item.private_v4 }}"
-  loop: "{{ openstack_servers }}"
+  loop: "{{ s_info }}"
   no_log: yes
   changed_when: false
   when: gather_worker_facts|bool
@@ -71,6 +76,6 @@
     worker_nodes: "{{ worker_nodes|default([]) + [{'addr': item.private_v4, 'name': item.name, 'vcpus': vcpus}] }}"
   vars:
     vcpus: "{{ openstack_flavors[0]['vcpus'] }}"
-  loop: "{{ openstack_servers }}"
+  loop: "{{ s_info }}"
   no_log: yes
   when: gather_worker_facts|bool
