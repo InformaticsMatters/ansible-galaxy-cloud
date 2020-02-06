@@ -30,7 +30,7 @@ instance_network: xchem-private
 
 head_type: c1.xxlarge
 head_image_name: ScientificLinux-7-NoGui
-head_addr: 130.246.215.45
+head_address: ''
 
 worker_type: c1.xxlarge
 worker_image_name: ScientificLinux-7-NoGui

@@ -107,8 +107,8 @@ At the very least you should provide your own values for: -
 -   `instance_base_name`. A tag prepended to the cloud objects created
     (instances and volumes)
 -   `instance_network`. A network name to use.
--   `head_addr`. The IP address (from a pool you own) to assign to the
-    head node.
+-   `head_address`. The IP address (from a pool you own) to assign to the
+    head node (optional).
 -   `worker_count`. The number of worker instances that will be put in the
     cluster.
 
