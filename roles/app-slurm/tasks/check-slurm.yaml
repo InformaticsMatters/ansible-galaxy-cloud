@@ -15,12 +15,21 @@
     offline_num: "{{ sinfo_summary.stdout.split('/')[2] }}"
     total_num: "{{ sinfo_summary.stdout.split('/')[3] }}"
 
+- name: Set online facts
+  set_fact:
+    online_num: "{{ total_num|int - offline_num|int }}"
+
 - name: Display node summary
   debug:
     msg: A={{ active_num }} I={{ idle_num }} O={{ offline_num }} T={{ total_num }}
 
-- name: Check offline and total node count
+- name: Check total node count
   assert:
-    that:
-    - offline_num|int == 0
-    - total_num|int == worker_count
+    that: total_num|int == worker_count
+    success_msg: All nodes are known to Slurm
+
+- name: Check at least some online
+  assert:
+    that: online_num|int > 0
+    fail_msg: Every node appears to be offline!
+    success_msg: "{{ online_num }} nodes are online"
