@@ -25,9 +25,9 @@
 
 - name: Set head node facts
   set_fact:
-    head_addr: "{{ head_facts.instances[0].public_ip_address }}"
+    head_addr: "{{ head_facts.instances[0].private_ip_address }}"
     head_private_v4: "{{ head_facts.instances[0].private_ip_address }}"
-    base_name: "{{ instance_base_name }}"
+    head_name: "{{ instance_base_name }}-head"
   when: gather_head_facts|bool
 
 # Get information about the worker nodes

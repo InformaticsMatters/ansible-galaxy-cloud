@@ -60,7 +60,11 @@
     regexp: "{{ line }}"
     line: "{{ line }}"
   vars:
-    line: "{{ hostvars['localhost']['head_private_v4'] }} {{ hostvars['localhost']['base_name'] }}-head"
+    line: "{{ hostvars['localhost']['head_private_v4'] }} {{ hostvars['localhost']['head_name'] }}"
+
+- name: Set hostname (head)
+  hostname:
+    name: "{{ hostvars['localhost']['head_name'] }}"
 
 - name: Adjust /etc/hosts (worker)
   lineinfile:
@@ -218,9 +222,10 @@
 
 - name: Create head connection command
   copy:
-    content: ssh {{ inventory_hostname }}
+    content: ssh {{ ansible_ssh_user }}@{{ inventory_hostname }}
     dest: connect.sh
     mode: 0755
+  become: no
   delegate_to: localhost
 
 # Get/create a MUNGE key.

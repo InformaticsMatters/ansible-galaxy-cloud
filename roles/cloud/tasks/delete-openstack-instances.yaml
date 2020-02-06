@@ -24,11 +24,12 @@
 # Workers can be called "{{ instance_base_name }}-worker" when there's just one
 # or "{{ instance_base_name }}-worker-<N>" when there are two or more...
 
-- name: Get worker node facts
-  os_server_facts:
+- name: Get worker node info
+  os_server_info:
     auth: "{{ os_auth }}"
     region_name: "{{ os_region_name }}"
     server: "{{ instance_base_name }}-worker*"
+  register: s_info
 
 - name: Delete worker nodes
   os_server:
@@ -36,7 +37,7 @@
     region_name: "{{ os_region_name }}"
     name: "{{ item['name'] }}"
     state: absent
-  loop: "{{ openstack_servers }}"
+  loop: "{{ s_info.openstack_servers }}"
   no_log: yes
 
 - name: Delete shared volume

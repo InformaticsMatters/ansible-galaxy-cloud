@@ -8,36 +8,38 @@
 # We simply want its IP address
 # so we can add it to the 'head' inventory group
 
-- name: Get head node facts
-  os_server_facts:
+- name: Get head node info
+  os_server_info:
     auth: "{{ os_auth }}"
     region_name: "{{ os_region_name }}"
     server: "{{ instance_base_name }}-head"
+  register: s_info
   when: gather_head_facts|bool
 
 - name: Adjust head node group
   add_host:
     groups: head
-    name: "{{ openstack_servers[0].interface_ip }}"
+    name: "{{ s_info.openstack_servers[0].private_v4 }}"
   changed_when: false
   when: gather_head_facts|bool
 
 - name: Set head node facts
   set_fact:
-    head_addr: "{{ openstack_servers[0].interface_ip }}"
-    head_private_v4: "{{ openstack_servers[0].private_v4 }}"
-    base_name: "{{ instance_base_name }}"
+    head_addr: "{{ s_info.openstack_servers[0].private_v4 }}"
+    head_private_v4: "{{ s_info.openstack_servers[0].private_v4 }}"
+    head_name: "{{ instance_base_name }}-head"
   when: gather_head_facts|bool
 
 # Get information about the worker node 'flavour'.
 # We want the CPU count for slurm.
 
-- name: Get worker node flavour facts
-  os_flavor_facts:
+- name: Get worker node flavour info
+  os_flavor_info:
     auth: "{{ os_auth }}"
     region_name: "{{ os_region_name }}"
     name: "{{ worker_type }}"
     limit: 1
+  register: f_info
   when: gather_worker_facts|bool
 
 # Get information about the worker nodes
@@ -48,17 +50,18 @@
 # or "{{ instance_base_name }}-worker-<N>" when there are two or more...
 
 - name: Get worker node facts
-  os_server_facts:
+  os_server_info:
     auth: "{{ os_auth }}"
     region_name: "{{ os_region_name }}"
     server: "{{ instance_base_name }}-worker*"
+  register: s_info
   when: gather_worker_facts|bool
 
 - name: Adjust worker node group
   add_host:
     groups: worker
     name: "{{ item.private_v4 }}"
-  loop: "{{ openstack_servers }}"
+  loop: "{{ s_info.openstack_servers }}"
   no_log: yes
   changed_when: false
   when: gather_worker_facts|bool
@@ -66,11 +69,11 @@
 # Now set a 'worker_nodes' fact.
 # This contains worker names, addresses and vCPU value.
 
-- name: Create worker node fact
+- name: Set worker node fact
   set_fact:
     worker_nodes: "{{ worker_nodes|default([]) + [{'addr': item.private_v4, 'name': item.name, 'vcpus': vcpus}] }}"
   vars:
-    vcpus: "{{ openstack_flavors[0]['vcpus'] }}"
-  loop: "{{ openstack_servers }}"
+    vcpus: "{{ f_info.openstack_flavors[0]['vcpus'] }}"
+  loop: "{{ s_info.openstack_servers }}"
   no_log: yes
   when: gather_worker_facts|bool

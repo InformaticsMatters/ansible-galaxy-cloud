@@ -1,27 +1,31 @@
-SlurmctldHost={{ base_name }}-head
+SlurmctldHost={{ head_name }}({{ head_addr }})
 
+AccountingStorageType=accounting_storage/none
+AuthType=auth/munge
+ClusterName=fragmentor
+JobAcctGatherType=jobacct_gather/none
 MpiDefault=none
 ProctrackType=proctrack/cgroup
 ReturnToService=2
-SlurmctldPidFile=/var/run/slurmctld.pid
-SlurmdPidFile=/var/run/slurmd.pid
-SlurmdSpoolDir=/var/spool/slurmd
-SlurmUser=slurm
-StateSaveLocation=/var/spool/slurmd
-SwitchType=switch/none
-TaskPlugin=task/affinity
-
-FastSchedule=1
 SchedulerType=sched/backfill
 SelectType=select/cons_res
 SelectTypeParameters=CR_Core
+SlurmUser=slurm
+SlurmdSpoolDir=/var/spool/slurmd.spool
+SlurmdTimeout=300
+StateSaveLocation=/var/spool/slurm.state
+SwitchType=switch/none
+TaskPlugin=task/affinity
+TreeWidth=50
 
-AccountingStorageType=accounting_storage/none
-ClusterName=cluster
-JobAcctGatherType=jobacct_gather/none
+# List all the nodes in the cluster, one per line.
+# Each node automatically becomes part of the same (single) partition
+# (as its 'Nodes' value is set to 'ALL').
 
+NodeName=DEFAULT State=UNKNOWN
 {% for node in worker_nodes %}
-NodeName={{ node.name }} NodeAddr={{ node.addr }} CPUs={{ node.vcpus }} State=UNKNOWN
+NodeName={{ node.name }} NodeAddr={{ node.addr }} CPUs={{ node.vcpus }}
 {% endfor %}
 
-PartitionName=cluster Nodes={{ base_name }}-worker-[1-{{ worker_nodes|length }}] Default=YES MaxTime=INFINITE State=UP
+PartitionName=DEFAULT State=UP
+PartitionName=fragmentor Nodes=ALL Default=YES MaxTime=INFINITE

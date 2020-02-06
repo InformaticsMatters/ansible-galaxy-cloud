@@ -12,14 +12,14 @@ workflows. Both Pulsar and Nextflow use the Slurm cluster for execution.
 The use of Pulsar allows Galaxy workflows to be executed without the need
 for a shared filesystem between the Galaxy and Slurm environments.
 
->   **This project should not to be confused with Ansible Galaxy**, Ansible's
+>   **This project should not be confused with Ansible Galaxy**, Ansible's
     community-driven repository of Ansible Roles.
      
 Creating a complete cluster takes approx 15 mins depending on the number of
 nodes.
 
-Singularity is deployed to the Slurm cluster allowing jos to be run using
-Singularity containers. Currently Pulsar is not configured to use Singularity
+Singularity is deployed to the Slurm cluster allowing jobs to be run using
+that format of container. Currently Pulsar is not configured to use Singularity
 containers and instead deploys tool dependencies using `conda` but we aim to
 switch to all execution using Singularity in the near future.
 
@@ -107,8 +107,8 @@ At the very least you should provide your own values for: -
 -   `instance_base_name`. A tag prepended to the cloud objects created
     (instances and volumes)
 -   `instance_network`. A network name to use.
--   `head_addr`. The IP address (from a pool you own) to assign to the
-    head node.
+-   `head_address`. The IP address (from a pool you own) to assign to the
+    head node (optional).
 -   `worker_count`. The number of worker instances that will be put in the
     cluster.
 
@@ -136,6 +136,7 @@ run the following on a suitably equipped bastion on your cloud provider: -
     $ pip install --upgrade pip
     $ pip install -r requirements.txt
     $ ansible-galaxy install -r requirements.yml
+    
     $ ansible-playbook site.yaml -e "@parameters"
 
 >   You can avoid formatting the shared volume (for instance if
@@ -151,6 +152,10 @@ run the following on a suitably equipped bastion on your cloud provider: -
 You can run separate 'sanity checks' with the `site-check` playbook: -
 
     $ ansible-playbook site-check.yaml -e "@parameters"
+
+>   The check ensures that slurm's `sinfo` command, when run on the head node,
+    does not report any _offline_ nodes and that all the total number of
+    nodes matches your `worker_count` value.
 
 And, to destroy the cluster: -
 

@@ -46,7 +46,8 @@
     owner: slurm
   vars:
     worker_nodes: "{{ hostvars['localhost']['worker_nodes'] }}"
-    base_name: "{{ hostvars['localhost']['base_name'] }}"
+    head_name: "{{ hostvars['localhost']['head_name'] }}"
+    head_addr: "{{ hostvars['localhost']['head_addr'] }}"
 
 - name: Copy slurm cgroup configuration
   copy:
@@ -60,9 +61,18 @@
     dest: /etc/slurm/cgroup_allowed_devices_file.conf
     owner: slurm
 
-- name: Configure slurmd directory
+- name: Configure slurmd spool directory
   file:
-    path: /var/spool/slurmd
+    path: /var/spool/slurmd.spool
+    state: directory
+    mode: 0755
+    owner: slurm
+    group: slurm
+    recurse: true
+
+- name: Configure slurm state directory
+  file:
+    path: /var/spool/slurm.state
     state: directory
     mode: 0755
     owner: slurm
