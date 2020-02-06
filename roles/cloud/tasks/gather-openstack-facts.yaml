@@ -16,9 +16,6 @@
   register: s_info
   when: gather_head_facts|bool
 
-- debug:
-    var: s_info.openstack_servers[0].private_v4
-
 - name: Adjust head node group
   add_host:
     groups: head
@@ -68,9 +65,6 @@
   no_log: yes
   changed_when: false
   when: gather_worker_facts|bool
-
-- debug:
-    var: s_info.openstack_servers
 
 # Now set a 'worker_nodes' fact.
 # This contains worker names, addresses and vCPU value.
