@@ -37,7 +37,7 @@
     region_name: "{{ os_region_name }}"
     name: "{{ item['name'] }}"
     state: absent
-  loop: "{{ s_info }}"
+  loop: "{{ s_info.openstack_servers }}"
   no_log: yes
 
 - name: Delete shared volume
