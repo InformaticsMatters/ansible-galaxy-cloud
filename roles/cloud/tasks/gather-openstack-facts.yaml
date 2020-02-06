@@ -16,9 +16,6 @@
   register: s_info
   when: gather_head_facts|bool
 
-- debug:
-    var: s_info
-
 - name: Adjust head node group
   add_host:
     groups: head
