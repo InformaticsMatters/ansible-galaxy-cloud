@@ -73,7 +73,7 @@
     OS_REGION_NAME: "{{ os_region_name }}"
   register: head
   changed_when: '"Cloud changed: True" in head.stdout'
-  when: head_addr|length > 0
+  when: head_address|length > 0
 
 - name: Create head node (without IP)
   script: >-
@@ -92,7 +92,7 @@
     OS_REGION_NAME: "{{ os_region_name }}"
   register: head
   changed_when: '"Cloud changed: True" in head.stdout'
-  when: head_addr|length == 0
+  when: head_address|length == 0
 
 - name: Display 'create head node' output
   debug:
