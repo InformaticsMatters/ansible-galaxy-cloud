@@ -36,4 +36,5 @@
   file:
     path: connect.sh
     state: absent
+  become: no
   delegate_to: localhost

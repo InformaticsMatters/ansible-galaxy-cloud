@@ -225,6 +225,7 @@
     content: ssh {{ansible_ssh_user}}@{{ inventory_hostname }}
     dest: connect.sh
     mode: 0755
+  become: no
   delegate_to: localhost
 
 # Get/create a MUNGE key.
