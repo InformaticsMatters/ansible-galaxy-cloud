@@ -8,13 +8,16 @@
 # We simply want its IP address
 # so we can add it to the 'head' inventory group
 
-- name: Get head node facts
+- name: Get head node info
   os_server_info:
     auth: "{{ os_auth }}"
     region_name: "{{ os_region_name }}"
     server: "{{ instance_base_name }}-head"
   register: s_info
   when: gather_head_facts|bool
+
+- debug:
+    var: s_info.openstack_servers[0].private_v4
 
 - name: Adjust head node group
   add_host:
@@ -33,7 +36,7 @@
 # Get information about the worker node 'flavour'.
 # We want the CPU count for slurm.
 
-- name: Get worker node flavour facts
+- name: Get worker node flavour info
   os_flavor_info:
     auth: "{{ os_auth }}"
     region_name: "{{ os_region_name }}"
@@ -66,10 +69,13 @@
   changed_when: false
   when: gather_worker_facts|bool
 
+- debug:
+    var: s_info.openstack_servers
+
 # Now set a 'worker_nodes' fact.
 # This contains worker names, addresses and vCPU value.
 
-- name: Create worker node fact
+- name: Set worker node fact
   set_fact:
     worker_nodes: "{{ worker_nodes|default([]) + [{'addr': item.private_v4, 'name': item.name, 'vcpus': vcpus}] }}"
   vars:
