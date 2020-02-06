@@ -37,11 +37,12 @@
 # We want the CPU count for slurm.
 
 - name: Get worker node flavour facts
-  os_flavor_facts:
+  os_flavor_info:
     auth: "{{ os_auth }}"
     region_name: "{{ os_region_name }}"
     name: "{{ worker_type }}"
     limit: 1
+  register: f_info
   when: gather_worker_facts|bool
 
 # Get information about the worker nodes
@@ -75,7 +76,7 @@
   set_fact:
     worker_nodes: "{{ worker_nodes|default([]) + [{'addr': item.private_v4, 'name': item.name, 'vcpus': vcpus}] }}"
   vars:
-    vcpus: "{{ openstack_flavors[0]['vcpus'] }}"
+    vcpus: "{{ f_info.openstack_flavors[0]['vcpus'] }}"
   loop: "{{ s_info.openstack_servers }}"
   no_log: yes
   when: gather_worker_facts|bool
