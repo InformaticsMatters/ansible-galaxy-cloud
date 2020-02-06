@@ -12,7 +12,7 @@ workflows. Both Pulsar and Nextflow use the Slurm cluster for execution.
 The use of Pulsar allows Galaxy workflows to be executed without the need
 for a shared filesystem between the Galaxy and Slurm environments.
 
->   **This project should not to be confused with Ansible Galaxy**, Ansible's
+>   **This project should not be confused with Ansible Galaxy**, Ansible's
     community-driven repository of Ansible Roles.
      
 Creating a complete cluster takes approx 15 mins depending on the number of
